@@ -1,38 +1,55 @@
-.App {
-  text-align: center;
+/* Input form */
+form.inputForm {
+    margin: .5em;
+    border: 1px solid #000;
+    padding: .5em;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+form.inputForm {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: auto 5em;
+    grid-template-areas: "label label" "field button";
+
+    grid-gap: 5px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+label.inputTextLabel {
+    grid-area: label;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+input.inputTextField {
+    grid-area: field;
 }
 
-.App-link {
-  color: #61dafb;
+button.inputTextSubmitBtn {
+    grid-area: button;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Output rows */
+div.output {
+    margin: .5em;
+    border: 1px solid #000;
+    padding: .5em;
+    padding-bottom: 1em;
+}
+
+div.output h1 {
+    font-size: 1em;
+    margin: .5em 0;
+}
+
+div.output .tokenArrayOutput {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+span.tokenOutput {
+    margin: .2em;
+    border: 1px solid #000;
+    padding: .2em;
+}
+
+span.tokenOutput.tokenParticle {
+    background-color: #fcc;
 }
