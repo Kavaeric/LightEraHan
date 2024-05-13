@@ -10,6 +10,7 @@ export default function OutputToken ({token}) {
         // Remove the highlight class from all those items
         for (let outputToken of unhighlightTargets) {
             outputToken.classList.remove("tokenHighlighted");
+            outputToken.classList.remove("tokenHighlightedMain");
         }
     }
 
@@ -17,10 +18,13 @@ export default function OutputToken ({token}) {
     function handleClick(event) {
 
         // If it's not highlighted, highlight it; otherwise, just unhighlight everything
-        if (!event.target.classList.contains("tokenHighlighted")) {
-            console.log("[" + token.word_position + "] " + token.surface_form);
+        if (!event.target.classList.contains("tokenHighlightedMain")) {
+            console.log("[" + token.word_position + "] " + token.display_form);
             console.log(token);
             unhighlightTokens();
+
+            // Add the focus token highlight to itself
+            event.target.classList.add("tokenHighlightedMain");
 
             // Find all other tokens with the same token "ID"
             const highlightTargets = document.getElementsByClassName("token_" + token.word_position);
@@ -35,7 +39,8 @@ export default function OutputToken ({token}) {
     }
 
     return (
-        <a className={
+        // Style the token depending on its content
+        <button className={
             classNames("tokenOutput", 
             {"tokenNoun": token.pos === "名詞" && token.pos_detail_1 != "固有名詞"}, // Excluding proper nouns
             {"tokenParticle": token.pos === "助詞"},
@@ -43,9 +48,21 @@ export default function OutputToken ({token}) {
             {"tokenVerbAux": token.pos === "助動詞"},
             {"tokenInterjection": token.pos === "感動詞"},
             {"tokenAdjective": token.pos === "形容詞"},
-            {"tokenSymbol": token.pos === "記号"})
+            {"tokenSymbol": token.pos === "記号"},
+            {"tokenUnknown": token.word_type === "UNKNOWN"},
+            {"tokenHasChanged": token.hasChanged})
             + " token_" + token.word_position}
-            href="#" onClick={handleClick}>
-        {token.surface_form}</a>
+            onClick={handleClick}
+            lang={token.langDisplay}>
+
+            {
+                // Check if there is a custom Han reading assigned
+                token.han_reading
+                    ? <span className="tokenRuby">{token.han_reading}</span>
+                    : ""
+            }
+
+            <span className="tokenDisplayForm">{token.display_form}</span>
+        </button>
     );
 }

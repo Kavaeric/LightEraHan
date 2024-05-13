@@ -1,40 +1,8 @@
-button {
-    border: 2px solid rgba(255, 255, 255, .5);
-    background-color: rgba(255, 255, 255, .1);
-    
-    color: #fff;
-    font-size: .8rem;
-    font-weight: 600;
-    font-family: inherit;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-
-    transition: all .1s;
-}
-button:hover,
-button:focus {
-    background-color: #fff;
-    color: #222;
-}
-button:active {
-    opacity: .5;
-}
-
-button:disabled,
-button:disabled:hover,
-button:disabled:active {
-    border: 1px solid #f55;
-    background: rgba(255, 0, 0, .1);
-    background: linear-gradient(30deg, rgba(255, 0, 0, .1) 49%, #f55 49%, #f55 51%, rgba(255, 0, 0, .1) 51%);
-    color: #f55;
-    opacity: .5;
-}
-
 /* Input form */
 div.inputHeader {
-    margin: 1rem;
     padding: 1rem;
-    background-color: #222;
+    padding-top: 2rem;
+    background-color: rgba(255, 255, 255, .12);
 }
 
 form.inputForm {
@@ -42,13 +10,13 @@ form.inputForm {
     grid-template-rows: auto auto;
     grid-template-columns: auto 9rem;
     grid-template-areas: "label label" "field button";
+    gap: .5rem;
 }
 
 label.inputTextLabel {
     grid-area: label;
 
     margin: 0;
-    margin-bottom: .5rem;
     font-size: 1rem;
     text-transform: uppercase;
 
@@ -56,15 +24,16 @@ label.inputTextLabel {
     letter-spacing: 0.05em;
 }
 
-input.inputTextField {
+textarea.inputTextField {
     grid-area: field;
+    resize: vertical;
+    min-height: 1.52rem;
     padding: .5rem;
 
     background-color: rgba(0, 0, 0, .2);
     border: 1px solid rgba(255, 255, 255, .5);
 
     color: #fff;
-    font-family: "Noto Sans JP";
     font-size: 1.2rem;
     opacity: .7;
 
@@ -72,20 +41,19 @@ input.inputTextField {
                 border .1s,
                 opacity .1s;
 }
-input.inputTextField:hover {
+textarea.inputTextField:hover {
     opacity: 1;
 }
 
-input.inputTextField:active,
-input.inputTextField:focus {
+textarea.inputTextField:active,
+textarea.inputTextField:focus {
     opacity: 1;
     border-color: #fff;
-    background-color: rgba(255, 255, 255, .1);
+    background-color: rgba(255, 255, 255, .05);
     outline: none;
 }
 
 button.inputTextSubmitBtn {
-    margin-left: .5em;
     font-size: 1.1rem;
 }
 
@@ -93,39 +61,32 @@ button.inputTextSubmitBtn {
 div.output {
     display: flex;
     flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
 }
 
 /* Individual output row */
 div.outputStep {
     display: flex;
     flex-direction: column;
-    margin: 1rem;
-    margin-bottom: 0;
+    
     padding: 1rem;
     padding-bottom: 1rem;
-    border-left: .2rem solid rgba(255, 255, 255, .2);
 
-    background: #222;
-    background: linear-gradient(90deg, #2b2b2b 0%, #222 40%);
+    background: rgba(255, 255, 255, .12);
+    background: linear-gradient(60deg, rgba(255, 255, 255, .15) 0%, rgba(255, 255, 255, .12) 40%);
     transition: all .1s;
-}
-div.outputStep:first-child {
-    margin-top: 0;
-}
-div.outputStep:last-child {
-    margin-bottom: 0;
-}
-div.outputStep:hover {
-    border-color: rgba(255, 255, 255, .3);
 }
 
 div.outputStepHeader {
     display: flex;
-    justify-content: space-between;
-    align-items: stretch;
+    align-items: center;
     height: 2rem;
-    
-    margin-bottom: .5em;
+    gap: .5rem;
+
+    margin-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, .1);
+    padding-bottom: .5rem;
 }
 
 div.outputStep h1 {
@@ -137,90 +98,187 @@ div.outputStep h1 {
     letter-spacing: 0.05em;
 }
 
-div.outputStep button.outputCopyBtn {
-    padding: 0 1rem;
+div.outputStepHeader button.outputCopyBtn {
+    padding: .3rem .6rem;
+}
+div.outputStepHeader button.outputCopyBtn:first-of-type {
+    margin-left: auto;
 }
 
+/* If the step didn't involve any changes from the previous step */
+div.outputStep.noChangesMade {
+    background: rgba(255, 255, 255, .08);
+}
+div.outputStep.noChangesMade h1 {
+    color: rgba(255, 255, 255, .5);
+    text-decoration: line-through;
+}
+
+/* Internal div for the list of tokens in a given step/output */
 div.tokenArrayOutput {
     display: flex;
     flex-wrap: wrap;
+    gap: .2rem;
+    font-size: 1.5rem;
 }
 
 /* Display of individual tokens (words/phrases) */
-a.tokenOutput {
-    margin: .2rem .1rem;
-    border: 1px solid rgba(255, 255, 255, .1);
+/* Previously done as anchor elements--HTML semantic spec would prefer buttons */
+/* Buttons perform an action, anchor links navigate through the document */
+button.tokenOutput {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: end;
+    cursor: pointer;
+
+    margin-top: .2rem;
+    border: 2px solid rgba(255, 255, 255, .1);
     padding: .15rem .3rem;
 
+    font-size: 1.5rem;
+    font-weight: normal;
     color: inherit;
     background: rgba(0, 0, 0, .2);
 
-    font-family: "Noto Sans JP", sans-serif;
     text-decoration: none;
-
     transition: border-color .1s,
                 color .1s,
                 background-color .1s;
 }
-a.tokenOutput:hover,
-a.tokenOutput:focus {
-    border-color: rgba(255, 255, 255, .5);
+
+/* Tokens that have been changed through one of the steps */
+button.tokenOutput.tokenHasChanged {
+    border-color: rgba(255, 255, 255, .3);
 }
-a.tokenOutput:active {
-    opacity: .8;
+
+button.tokenOutput.tokenHighlightedMain {
+    background-color: #fff;
+}
+
+/* Unknown tokens */
+button.tokenOutput.tokenUnknown {
+    border-color: rgba(255, 85, 85, 0.3);
+    color: rgba(255, 255, 255, .8);
+}
+
+/* Hover effects */
+button.tokenOutput:hover,
+button.tokenOutput:focus {
+    border-color: rgba(255, 255, 255, .5);
 }
 
 /* Colour-coding different token types */
-a.tokenOutput.tokenParticle {
+button.tokenOutput.tokenParticle {
     color: #fbb;
 }
-a.tokenOutput.tokenParticle.tokenHighlighted {
+button.tokenOutput.tokenParticle.tokenHighlighted {
+    border-color: #fbb;
+}
+button.tokenOutput.tokenParticle.tokenHighlightedMain {
     background: #fbb;
 }
 
-a.tokenOutput.tokenNoun {
+button.tokenOutput.tokenNoun {
     color: #fbf;
 }
-a.tokenOutput.tokenNoun.tokenHighlighted {
+button.tokenOutput.tokenNoun.tokenHighlighted {
+    border-color: #fbf;
+}
+button.tokenOutput.tokenNoun.tokenHighlightedMain {
     background-color: #fbf;
 }
 
-a.tokenOutput.tokenVerb {
+button.tokenOutput.tokenVerb,
+button.tokenOutput.tokenVerbAux {
     color: #aef;
 }
-a.tokenOutput.tokenVerbAux {
+button.tokenOutput.tokenVerbAux {
     margin-left: 0;
-    color: #aef;
 }
-a.tokenOutput.tokenVerb.tokenHighlighted {
+button.tokenOutput.tokenVerb.tokenHighlighted,
+button.tokenOutput.tokenVerbAux.tokenHighlighted {
+    border-color: #aef;
+}
+button.tokenOutput.tokenVerb.tokenHighlightedMain,
+button.tokenOutput.tokenVerbAux.tokenHighlightedMain {
     background-color: #aef;
 }
 
-a.tokenOutput.tokenInterjection {
+button.tokenOutput.tokenInterjection {
     color: #fea;
 }
-a.tokenOutput.tokenInterjection.tokenHighlighted {
+button.tokenOutput.tokenInterjection.tokenHighlighted {
+    border-color: #fea;
+}
+button.tokenOutput.tokenInterjection.tokenHighlightedMain {
     background-color: #fea;
 }
 
-a.tokenOutput.tokenAdjective {
+button.tokenOutput.tokenAdjective {
     color: #bfb;
 }
-a.tokenOutput.tokenAdjective.tokenHighlighted {
+button.tokenOutput.tokenAdjective.tokenHighlighted {
+    border-color: #bfb;
+}
+button.tokenOutput.tokenAdjective.tokenHighlightedMain {
     background-color: #bfb;
 }
 
-a.tokenOutput.tokenSymbol {
+button.tokenOutput.tokenSymbol {
     opacity: 0.5;
     border-color: transparent;
     background: transparent;
 }
-a.tokenOutput.tokenSymbol:hover {
+button.tokenOutput.tokenSymbol:hover {
     border-color: rgba(255, 255, 255, .2);
 }
 
-a.tokenOutput.tokenHighlighted {
-    border-color: transparent;
+button.tokenOutput.tokenSymbol.tokenHighlightedMain {
     background: #fff;
+}
+
+/* Tokens highlighted on select */
+button.tokenOutput.tokenHighlighted {
+    border-color: rgba(255, 255, 255, .8);
+    border-width: 2px;
+    box-shadow: 0 0 1em rgba(255, 255, 255, .1);
+}
+
+button.tokenOutput.tokenHighlightedMain {
+    border-color: transparent;
     color: #222;
+    z-index: 9;
+}
+
+/* Ruby/furigana display */
+button.tokenOutput span.tokenRuby {
+    font-size: .4em;
+    letter-spacing: 0;
+    opacity: .8;
+}
+
+/* Final output row */
+div.tokenArrayOutput.resultOutput {
+    gap: 0;
+}
+
+div.tokenArrayOutput.resultOutput .tokenOutput {
+    font-size: 1.8rem;
+}
+
+div.tokenArrayOutput.resultOutput button.tokenOutput {
+    padding: 0;
+    border-top-color: transparent;
+    border-left-color: transparent;
+    border-right-color: transparent;
+}
+
+div.tokenArrayOutput.resultOutput button.tokenOutput:not(:active):not(:hover):not(.tokenHighlighted):not(.tokenHighlightedMain) {
+    border-color: transparent;
+}
+
+div.tokenArrayOutput.resultOutput button.tokenOutput:not(:active):not(.tokenHighlightedMain) {
+    background: transparent;
+    box-shadow: none;
 }

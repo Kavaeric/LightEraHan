@@ -1,15 +1,135 @@
-body {
-  margin: 0;
-  font-family: "Poppins", sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* Fonts */
+@font-face {
+	font-family: "Source Han Sans HW-JP";
+	src:
+		local("SourceHanSansHW-VF"),
+		url("./fonts/SourceHanSansHW-VF.otf.woff2") format("woff2");
+	ascent-override: 100%;
+}
 
-  color: #eee;
-  background-color: #000;
-  font-size: 20px;
+@font-face {
+	font-family: "Source Han Sans HW-SC";
+	src:
+		local("SourceHanSansHWSC-VF"),
+		url("./fonts/SourceHanSansHWSC-VF.otf.woff2") format("woff2");
+	ascent-override: 100%;
+}
+
+body {
+	margin: 0;
+	font-family: "Poppins", sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+
+	color: #eee;
+	background-color: #000;
+}
+
+div.pageContainer {
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+	font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+:lang(ja) {
+	font-family: "Source Han Sans HW-JP", sans-serif;
+}
+
+:lang(zh-Hans) {
+	font-family: "Source Han Sans HW-SC", sans-serif;
+}
+
+.contain-width {
+	margin: 0 auto;
+    max-width: 1200px;
+}
+
+a {
+	color: #f50;
+	text-decoration: none;
+	transition: all .1s;
+}
+a:hover,
+a:focus {
+	background-color: rgba(255, 255, 255, .1);
+}
+a:active {
+	opacity: .5;
+}
+
+button {
+    border: 2px solid rgba(255, 255, 255, .5);
+    background-color: rgba(255, 255, 255, .05);
+    
+    color: #fff;
+    font-size: .8rem;
+    font-weight: 600;
+    font-family: inherit;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+
+    transition: all .1s;
+}
+button:hover,
+button:focus {
+    background-color: #fff;
+    color: #222;
+    cursor: pointer;
+}
+button:active {
+    opacity: .5;
+}
+
+button:disabled,
+button:disabled:hover,
+button:disabled:active {
+    border: 1px solid #f55;
+    background: rgba(255, 0, 0, .1);
+    background: linear-gradient(30deg, rgba(255, 0, 0, .1) 49%, #f55 49%, #f55 51%, rgba(255, 0, 0, .1) 51%);
+    color: #f55;
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+/* Placing items inside a button would actually block interaction; this fixes that */
+button > * {
+    pointer-events: none;
+}
+
+p, ul, ol {
+	color: rgba(255, 255, 255, .5);
+}
+
+ul {
+	list-style: square;
+}
+
+/* Page footer */
+div.footer {
+	margin-top: auto;
+	padding: 2rem 1rem;
+    background-color: rgba(255, 255, 255, .12);
+}
+
+div.footerAbout {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-template-rows: auto auto;
+	grid-template-areas: "header header" "col1 col2";
+	column-gap: 1rem;
+}
+
+div.footerAbout h1 {
+	grid-area: header;
+	margin: 0;
+
+	font-size: 1.5rem;
+	text-transform: uppercase;
+	font-weight: 600;
+	letter-spacing: 0.05em;
 }
