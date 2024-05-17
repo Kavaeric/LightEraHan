@@ -1,40 +1,25 @@
+import { useContext } from 'react';
 import classNames from "classnames";
+import { SelectedTokenContext, SetSelectedTokenContext, StepContext} from "./App";
 
 export default function OutputToken ({token}) {
 
-    // TODO: Move this from this file to App.js
-    function unhighlightTokens() {
-        // Remove the highlight from all other items
-        const unhighlightTargets = document.getElementsByClassName("tokenOutput");
+    // selectedToken is the context that tracks the currently user-selected token
+    // Comes in the form of an array, [step index, token.word_position]
+    const selectedToken = useContext(SelectedTokenContext);
+    const setSelectedToken = useContext(SetSelectedTokenContext);
+    // Current step the token is associated with
+    const step = useContext(StepContext);
 
-        // Remove the highlight class from all those items
-        for (let outputToken of unhighlightTargets) {
-            outputToken.classList.remove("tokenHighlighted");
-            outputToken.classList.remove("tokenHighlightedMain");
-        }
-    }
-
-    // This too
-    function handleClick(event) {
-
-        // If it's not highlighted, highlight it; otherwise, just unhighlight everything
-        if (!event.target.classList.contains("tokenHighlightedMain")) {
-            console.log("[" + token.word_position + "] " + token.display_form);
-            console.log(token);
-            unhighlightTokens();
-
-            // Add the focus token highlight to itself
-            event.target.classList.add("tokenHighlightedMain");
-
-            // Find all other tokens with the same token "ID"
-            const highlightTargets = document.getElementsByClassName("token_" + token.word_position);
-            
-            // Add the highlighted token class
-            for (let outputToken of highlightTargets) {
-                outputToken.classList.add("tokenHighlighted");
-            }
+    // On click, do the highlighting stuff
+    function handleClick() {
+        // If the selected token is, infact this one; just unset the selected token
+        if (selectedToken[0] === step && selectedToken[1] === token.word_position) {
+            setSelectedToken([0, 0]);
         } else {
-            unhighlightTokens();
+            setSelectedToken([step, token.word_position]);
+            console.log(`[${step}, ${token.word_position}] ${token.display_form}`);
+            console.log(token);
         }
     }
 
@@ -50,8 +35,10 @@ export default function OutputToken ({token}) {
             {"tokenAdjective": token.pos === "形容詞"},
             {"tokenSymbol": token.pos === "記号"},
             {"tokenUnknown": token.word_type === "UNKNOWN"},
-            {"tokenHasChanged": token.hasChanged})
-            + " token_" + token.word_position}
+            {"tokenHasChanged": token.hasChanged},
+            {"tokenHighlighted": token.word_position === selectedToken[1]},
+            {"tokenHighlightedMain": token.word_position === selectedToken[1] && step === selectedToken[0]},
+            "token_" + token.word_position)}
             onClick={handleClick}
             lang={token.langDisplay}>
 

@@ -1,97 +1,53 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useContext, createContext, useRef } from 'react';
 import classNames from 'classnames';
-import kuromoji from "kuromoji/build/kuromoji"; // Japanese language parser
-import * as OpenCC from "opencc-js"; // Chinese simplified-traditional converter
-import Papa from "papaparse"; // CSV parser
 import './App.css';
+import { getTokenizer, buildTokenizer } from "./lib/Kuromoji"; // Kuromoji parser
+import { convertToHan, arrayHasChanges } from './lib/HanConverter';
 import OutputTokenArray from './OutputTokenArray';
+
+// For token highlighting
+// Stores the word_position value of a selected token
+export const SelectedTokenContext = createContext();
+export const SetSelectedTokenContext = createContext();
+// For identifying which step, which can then be used to pinpoint a single token
+export const StepContext = createContext();
 
 function App() {
 
-	// Container variable for tokenizer system
-	const [tokenizer, setTokenizer] = useState(null);
+	// True/false state for if the tokenizer's loaded or not
+	const [isTokenizerLoaded, setIsTokenizerLoaded] = useState(false);
+
+	// Final conversion matrix
+	const [conversionMatrix, setConversionMatrix] = useState([]);
 
 	// Containers for dictionaries
 	const [ctParticles, SetCTParticles] = useState(null);
 
 	// Containers for the pipeline
-	const [outputArrays, setOutputArrays] = useState(null); // Final output containing every step
-	const [outputSteps, setOutputSteps] = useState(null); // Array of strings describing each step, for writing headers in the DOM
 	const inputField = useRef(null);
 
 	// Default placeholder text
 	const [placeholderText, setPlaceholderText] = useState(null);
 
+	// For token highlighting, get/set the currently highlighting
+	const [selectedToken, setSelectedToken] = useState([0, 0]);
+
 	// Will run any enclosed function when a dependency changes
 	// This one has no dependencies so it'll run once on startup
 	useEffect(() => {
 
+		// Async function in place
+		(async () => {
+			await buildTokenizer();
+			setIsTokenizerLoaded(true);
+		})()
+
 		// Placeholder text, for when the text field is left empty
 		setPlaceholderText("日本国旗の赤い丸は太陽を象徴している。歴史は面白いよね。");
-
-		// Initialise the tokenizer
-		kuromoji.builder({ dicPath: "kuromoji/dict/" }).build(function (error, _tokenizer) {
-			if (error != null) {
-				console.log(error);
-			}
-
-			// The tokenizer loads async, so some logic will be needed to check for initialisation
-			setTokenizer(_tokenizer);
-			console.log("Tokenizer initialised.");
-			console.log("- - - - -");
-		});
-
-		// Conversion tables parsed from .CSVs
-		Papa.parse("contables/particles.csv", {
-			download: true,
-			header: true,
-			comments: "//",
-
-			complete: function(result) {
-				console.log("Parsed particles.csv");
-				console.log(result);
-				SetCTParticles(result.data);
-			}
-		});
-
-		Papa.parse("contables/custom.csv", {
-			download: true,
-			header: true,
-			comments: "//",
-
-			complete: function(result) {
-				console.log("Parsed custom.csv");
-				console.log(result);
-				SetCTParticles(result.data);
-			}
-		});
 
 	// Defining dependencies, of which there aren't any, hence the empty array
 	// This won't change, though, so it'll just run once
 	},[]);
-
-	// Whenever inputParse changes, log it
-	useEffect(() => {
-		console.log(outputArrays);
-	},[outputArrays]);
-
-	function highlightTokens(wordPosition) {
-		console.log(wordPosition);
-	}
-
-	// Run this before every step
-	function nextConversionStep(tokenArrays, pipelineStepArray, stepName) {
-		// Clone the last step forward, which will then be processed by whatever function the step uses
-		tokenArrays.push(structuredClone(tokenArrays.at(-1)));
-
-		// Set all the changed flags of all the tokens to false
-		for (let token of tokenArrays.at(-1)) {	
-			token.hasChanged = false;
-		}
-
-		// TODO: There's probably a better way to do this since it's a top-level variable...
-		pipelineStepArray.push(stepName);
-	}
 
 	// Handler for the "copy" button on each output row
 	function copyOutputText(tokenArray) {
@@ -110,117 +66,12 @@ function App() {
 		console.log("Copied " + copiedReadings.join("　") + " to clipboard.");
 	}
 
-	// Checks if an array has had any changes and returns a bool
-	function arrayHasChanges(tokenArray) {
-		let arrayHasChanged = false;
-
-		// TODO: Probably a better way to do this
-		for (let token of tokenArray) {
-			if (token.hasChanged) {
-				arrayHasChanged = true;
-				break;
-			}
-		}
-
-		return arrayHasChanged;
-	}
-
-	// Converts all characters in a token array simplfied characters
-	function convertArrayToSimplified(tokenArray) {
-		const converter = OpenCC.Converter({ from: 'jp', to: 'cn' });
-
-		// Take each token's display form and run it through the converter
-		for (let token of tokenArray) {	
-			let newForm = converter(token.display_form);
-
-			if (token.display_form != newForm) {
-				token.display_form = newForm;
-				token.hasChanged = true;
-			}
-
-			// Update the language display so the correct typefaces are used
-			token.langDisplay = "zh-Hans";
-		}
-	}
-
-	// Converts all the verbs in a token array into their non-conjugated (basic) form
-	function unconjugateVerbs(tokenArray) {
-		for (let token of tokenArray) {	
-			if (token.pos === "動詞" && token.display_form != token.basic_form) {
-				token.display_form = token.basic_form;
-				token.hasChanged = true;
-			}
-		}
-	}
-
-	// Adds the han_reading property to all tokens in the array, which gets displayed as ruby.
-	// Currently using a placeholder function that just copies the existing reading info, which produces funny results with the de-conjugator
-	function addReadingsToArray(tokenArray) {
-		for (let token of tokenArray) {
-			// Exclude symbols/punctuation
-			if (token.pos != "記号") {
-				token.han_reading = token.pronunciation;
-			}
-		}
-	}
-
 	function handleSubmit(event) {
 		// The mark of a universe governed by an uncaring God
 		event.preventDefault();
 		console.log("- - - - -");
 
-		if (!tokenizer) {
-			console.log("Tokenizer not loaded!");
-			return;
-		}
-
-		// This will be the overarching super-array that holds all the steps
-		// At the end of the process the data will be pushed through to outputArrays
-		let tokenArrays = [];
-		let pipelineSteps = [];
-
-		// Go with current.value; otherwise fallback to the placeholder
-		let inputText = inputField.current.value||placeholderText;
-		console.log("Submitted: " + inputText);
-
-		// setInputParse(tokenizer.tokenize(inputText));
-		tokenArrays[0] = tokenizer.tokenize(inputText);
-		console.log("Initial parse complete.");
-		
-		// Adding new keys allows the rest of the kuromoji token properties to be preserved
-		for (let token of tokenArrays[0]) {
-			// display_form is what is shown to the client, so the original input
-			// surface_form is preserved
-			token.display_form = token.surface_form;
-
-			// Language tag, used for typeface display purposes
-			// Typefaces are swapped in CSS depending
-			token.langDisplay = "ja";
-
-			// Logs changes so that each step can be styled appropriately
-			token.hasChanged = false;
-		}
-		console.log(tokenArrays[0]);
-
-		// STEP 1: REPLACE PARTICLES
-		nextConversionStep(tokenArrays, pipelineSteps, "Replace particles");
-		// then run a function that modifies tokenArrays.at(-1)
-
-		// STEP 2: UNCONJUGATE VERBS
-		nextConversionStep(tokenArrays, pipelineSteps, "Unconjugate verbs");
-		unconjugateVerbs(tokenArrays.at(-1));
-
-		// STEP 3: CONVERT TO SIMPLIFIED
-		nextConversionStep(tokenArrays, pipelineSteps, "Use Simplified Chinese");
-		convertArrayToSimplified(tokenArrays.at(-1));
-
-		// FINAL STEP, processing readings etc
-		nextConversionStep(tokenArrays, pipelineSteps, "Adding readings information");
-		addReadingsToArray(tokenArrays.at(-1));
-
-		// Push the final results to the appropriate containers for render
-		setOutputArrays(tokenArrays);
-		setOutputSteps(pipelineSteps);
+		setConversionMatrix(convertToHan(inputField.current.value||placeholderText));
 
 		// This won't work as it won't update until next render
 		// console.log(inputParse);
@@ -233,65 +84,76 @@ function App() {
 			<form className="inputForm contain-width" onSubmit={handleSubmit}>
 				<label className="inputTextLabel" htmlFor="inputText">Input Japanese text:</label>
 				<textarea className="inputTextField" type="text" name="inputText" ref={inputField} placeholder={placeholderText} lang="ja" />
-				<button className="inputTextSubmitBtn" type="submit" disabled={tokenizer === null}>Convert</button>
+				<button className="inputTextSubmitBtn" type="submit" disabled={!isTokenizerLoaded}>Convert</button>
 			</form>
 		</div>
 
-		<div className="output contain-width">
-			<div className="outputStep">
-				<div className="outputStepHeader">
-					<h1>Initial parse</h1>
-					<button onClick={() => copyOutputText(0)} className="outputCopyBtn" disabled={outputArrays === null}>Copy Text</button>
+		{/* Anything within these tags can access these context values/functions */}
+		<SelectedTokenContext.Provider value={selectedToken}>
+		<SetSelectedTokenContext.Provider value={setSelectedToken}>
+			<div className="output contain-width">
+				<div className="outputStep">
+					<div className="outputStepHeader">
+						<h1>Initial parse</h1>
+						<button onClick={() => copyOutputText(conversionMatrix[0].tokenArray)} className="outputCopyBtn" disabled={!isTokenizerLoaded}>Copy Text</button>
+					</div>
+					{
+						conversionMatrix.length > 0
+							? 	<StepContext.Provider value={0}>
+								<div className="tokenArrayOutput"><OutputTokenArray tokens={conversionMatrix[0].tokenArray} /></div>
+								</StepContext.Provider>
+							: 'Enter some text above, then click the "convert" button.'
+					}
 				</div>
+				
 				{
-					outputArrays
-						? <div className="tokenArrayOutput"><OutputTokenArray tokens={outputArrays[0]} /></div>
-						: 'Enter some text above, then click the "convert" button.'
+					conversionMatrix.length > 0
+						// For every tokenArray in tokenArrays, create a new outputStep div with its own tokenArrayOutput class.
+						? conversionMatrix.slice(1, -1).map((conversionStep, index) => 
+							<StepContext.Provider value={index + 1} key={index + 1}>
+							<div className={classNames(
+								"outputStep", {"noChangesMade": !arrayHasChanges(conversionStep.tokenArray)})}
+								key={index + 1}>
+									
+								<div className="outputStepHeader">
+									<h1>Step {index + 1}: {conversionMatrix[index].stepDescription}</h1>
+									{!arrayHasChanges(conversionStep.tokenArray)
+										? <span className="noChangesWarning">No changes in this step.</span>
+										: ""
+									}
+									<button onClick={() => copyOutputText(conversionStep.tokenArray)} className="outputCopyBtn">Copy Text</button>
+								</div>
+								<div className="tokenArrayOutput" key={index + 1}>
+									<OutputTokenArray tokens={conversionStep.tokenArray} />
+								</div>
+							</div>
+							</StepContext.Provider>)
+						// Otherwise, output nothing
+						: ""
+				}
+
+				{
+					// Final row with its own bespoke formatting and features
+					conversionMatrix.length > 0
+						// For every tokenArray in tokenArrays, create a new outputStep div with its own tokenArrayOutput class.
+						? 	<StepContext.Provider value={conversionMatrix.length - 1}>
+							<div className="outputStep">
+								<div className="outputStepHeader">
+									<h1>Final result</h1>
+									<button onClick={() => copyReadings(conversionMatrix.at(-1).tokenArray)} className="outputCopyBtn">Copy Readings</button>
+									<button onClick={() => copyOutputText(conversionMatrix.at(-1).tokenArray)} className="outputCopyBtn">Copy Text</button>
+								</div>
+								<div className="tokenArrayOutput resultOutput">
+									<OutputTokenArray tokens={conversionMatrix.at(-1).tokenArray} />
+								</div>
+							</div>
+							</StepContext.Provider>
+						// Otherwise, output nothing
+						: ""
 				}
 			</div>
-
-			{
-				outputArrays
-					// For every tokenArray in tokenArrays, create a new outputStep div with its own tokenArrayOutput class.
-					? outputArrays.slice(1, -1).map((tokenArray, index) => 
-						<div className={classNames(
-							"outputStep", {"noChangesMade": !arrayHasChanges(tokenArray)})}
-							key={index + 1}>
-								
-							<div className="outputStepHeader">
-								<h1>Step {index + 1}: {outputSteps[index]}</h1>
-								{!arrayHasChanges(tokenArray)
-									? <span className="noChangesWarning">No changes in this step.</span>
-									: ""
-								}
-								<button onClick={() => copyOutputText(tokenArray)} className="outputCopyBtn">Copy Text</button>
-							</div>
-							<div className="tokenArrayOutput" key={index + 1}>
-								<OutputTokenArray tokens={tokenArray} />
-							</div>
-						</div>)
-					// Otherwise, output nothing
-					: ""
-			}
-
-			{
-				// Final row with its own bespoke formatting and features
-				outputArrays
-					// For every tokenArray in tokenArrays, create a new outputStep div with its own tokenArrayOutput class.
-					? <div className="outputStep">
-							<div className="outputStepHeader">
-								<h1>Final result</h1>
-								<button onClick={() => copyReadings(outputArrays.at(-1))} className="outputCopyBtn">Copy Readings</button>
-								<button onClick={() => copyOutputText(outputArrays.at(-1))} className="outputCopyBtn">Copy Text</button>
-							</div>
-							<div className="tokenArrayOutput resultOutput">
-								<OutputTokenArray tokens={outputArrays.at(-1)} />
-							</div>
-						</div>
-					// Otherwise, output nothing
-					: ""
-			}
-		</div>
+		</SetSelectedTokenContext.Provider>
+		</SelectedTokenContext.Provider>
 		</div>
 	);
 }
