@@ -1,34 +1,17 @@
 import ChineseConverter from "./ChineseConverter"; // Simplified-Traditional Chinese converter
 import { getTokenizer, buildTokenizer } from "./Kuromoji"; // Kuromoji parser
-import Papa from "papaparse"; // CSV parser
+import { parseConTables } from "./ConversionTables";
 
-/* TODO
-function untitledparse() {
-	// Conversion tables parsed from .CSVs
-	Papa.parse("contables/particles.csv", {
-		download: true,
-		header: true,
-		comments: "//",
+// Initial setup
+export function initialiseHanConverter() {
+	return Promise.all([
+		// Wait for the tokenizer to load
+		buildTokenizer(),
 
-		complete: function(result) {
-			console.log("Parsed particles.csv");
-			console.log(result);
-			SetCTParticles(result.data);
-		}
-	});
-
-	Papa.parse("contables/custom.csv", {
-		download: true,
-		header: true,
-		comments: "//",
-
-		complete: function(result) {
-			console.log("Parsed custom.csv");
-			console.log(result);
-			SetCTParticles(result.data);
-		}
-	});
-}*/
+		// Wait for the conversion tables to load
+		parseConTables()
+	])
+}
 
 // Checks if an array has had any changes and returns a bool
 export function arrayHasChanges(tokenArray) {

@@ -2,7 +2,8 @@ import { useEffect, useState, useContext, createContext, useRef } from 'react';
 import classNames from 'classnames';
 import './App.css';
 import { getTokenizer, buildTokenizer } from "./lib/Kuromoji"; // Kuromoji parser
-import { convertToHan, arrayHasChanges } from './lib/HanConverter';
+import { convertToHan, arrayHasChanges, initialiseHanConverter } from './lib/HanConverter';
+import { parseConTables } from './lib/ConversionTables';
 import OutputTokenArray from './OutputTokenArray';
 
 // For token highlighting
@@ -15,7 +16,7 @@ export const StepContext = createContext();
 function App() {
 
 	// True/false state for if the tokenizer's loaded or not
-	const [isTokenizerLoaded, setIsTokenizerLoaded] = useState(false);
+	const [isConverterLoaded, setIsConverterLoaded] = useState(false);
 
 	// Final conversion matrix
 	const [conversionMatrix, setConversionMatrix] = useState([]);
@@ -38,8 +39,9 @@ function App() {
 
 		// Async function in place
 		(async () => {
-			await buildTokenizer();
-			setIsTokenizerLoaded(true);
+			initialiseHanConverter();
+
+			setIsConverterLoaded(true);
 		})()
 
 		// Placeholder text, for when the text field is left empty
@@ -84,7 +86,7 @@ function App() {
 			<form className="inputForm contain-width" onSubmit={handleSubmit}>
 				<label className="inputTextLabel" htmlFor="inputText">Input Japanese text:</label>
 				<textarea className="inputTextField" type="text" name="inputText" ref={inputField} placeholder={placeholderText} lang="ja" />
-				<button className="inputTextSubmitBtn" type="submit" disabled={!isTokenizerLoaded}>Convert</button>
+				<button className="inputTextSubmitBtn" type="submit" disabled={!isConverterLoaded}>Convert</button>
 			</form>
 		</div>
 
@@ -95,7 +97,7 @@ function App() {
 				<div className="outputStep">
 					<div className="outputStepHeader">
 						<h1>Initial parse</h1>
-						<button onClick={() => copyOutputText(conversionMatrix[0].tokenArray)} className="outputCopyBtn" disabled={!isTokenizerLoaded}>Copy Text</button>
+						<button onClick={() => copyOutputText(conversionMatrix[0].tokenArray)} className="outputCopyBtn" disabled={!isConverterLoaded}>Copy Text</button>
 					</div>
 					{
 						conversionMatrix.length > 0
