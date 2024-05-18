@@ -1,15 +1,14 @@
 import { useEffect, useState, useContext, createContext, useRef } from 'react';
 import classNames from 'classnames';
 import './App.css';
-import { getTokenizer, buildTokenizer } from "./lib/Kuromoji"; // Kuromoji parser
-import { convertToHan, arrayHasChanges, initialiseHanConverter } from './lib/HanConverter';
-import { parseConTables } from './lib/ConversionTables';
+import HanConverter from './lib/HanConverter';
 import OutputTokenArray from './OutputTokenArray';
 
 // For token highlighting
 // Stores the word_position value of a selected token
 export const SelectedTokenContext = createContext();
 export const SetSelectedTokenContext = createContext();
+
 // For identifying which step, which can then be used to pinpoint a single token
 export const StepContext = createContext();
 
@@ -21,26 +20,22 @@ function App() {
 	// Final conversion matrix
 	const [conversionMatrix, setConversionMatrix] = useState([]);
 
-	// Containers for dictionaries
-	const [ctParticles, SetCTParticles] = useState(null);
-
 	// Containers for the pipeline
 	const inputField = useRef(null);
 
 	// Default placeholder text
 	const [placeholderText, setPlaceholderText] = useState(null);
 
-	// For token highlighting, get/set the currently highlighting
+	// For token highlighting, get/set what's currently highlighted
 	const [selectedToken, setSelectedToken] = useState([0, 0]);
 
 	// Will run any enclosed function when a dependency changes
 	// This one has no dependencies so it'll run once on startup
 	useEffect(() => {
 
-		// Async function in place
+		// Async function in place: initialise the Han converter, and once done flag the converter as loaded
 		(async () => {
-			initialiseHanConverter();
-
+			HanConverter.initialiseHanConverter();
 			setIsConverterLoaded(true);
 		})()
 
@@ -48,7 +43,7 @@ function App() {
 		setPlaceholderText("日本国旗の赤い丸は太陽を象徴している。歴史は面白いよね。");
 
 	// Defining dependencies, of which there aren't any, hence the empty array
-	// This won't change, though, so it'll just run once
+	// This won't change, though, so it'll just run once on startup
 	},[]);
 
 	// Handler for the "copy" button on each output row
@@ -73,7 +68,7 @@ function App() {
 		event.preventDefault();
 		console.log("- - - - -");
 
-		setConversionMatrix(convertToHan(inputField.current.value||placeholderText));
+		setConversionMatrix(HanConverter.convertToHan(inputField.current.value||placeholderText));
 
 		// This won't work as it won't update until next render
 		// console.log(inputParse);
@@ -101,7 +96,7 @@ function App() {
 					</div>
 					{
 						conversionMatrix.length > 0
-							? 	<StepContext.Provider value={0}>
+							? 	<StepContext.Provider value={[0, conversionMatrix.length]}>
 								<div className="tokenArrayOutput"><OutputTokenArray tokens={conversionMatrix[0].tokenArray} /></div>
 								</StepContext.Provider>
 							: 'Enter some text above, then click the "convert" button.'
@@ -112,14 +107,14 @@ function App() {
 					conversionMatrix.length > 0
 						// For every tokenArray in tokenArrays, create a new outputStep div with its own tokenArrayOutput class.
 						? conversionMatrix.slice(1, -1).map((conversionStep, index) => 
-							<StepContext.Provider value={index + 1} key={index + 1}>
+							<StepContext.Provider value={[index + 1, conversionMatrix.length]} key={index + 1}>
 							<div className={classNames(
-								"outputStep", {"noChangesMade": !arrayHasChanges(conversionStep.tokenArray)})}
+								"outputStep", {"noChangesMade": !HanConverter.arrayHasChanges(conversionStep.tokenArray)})}
 								key={index + 1}>
 									
 								<div className="outputStepHeader">
-									<h1>Step {index + 1}: {conversionMatrix[index].stepDescription}</h1>
-									{!arrayHasChanges(conversionStep.tokenArray)
+									<h1>Step {index + 1}: {conversionMatrix[index + 1].stepDescription}</h1>
+									{!HanConverter.arrayHasChanges(conversionStep.tokenArray)
 										? <span className="noChangesWarning">No changes in this step.</span>
 										: ""
 									}
@@ -138,7 +133,7 @@ function App() {
 					// Final row with its own bespoke formatting and features
 					conversionMatrix.length > 0
 						// For every tokenArray in tokenArrays, create a new outputStep div with its own tokenArrayOutput class.
-						? 	<StepContext.Provider value={conversionMatrix.length - 1}>
+						? 	<StepContext.Provider value={[conversionMatrix.length - 1, conversionMatrix.length]}>
 							<div className="outputStep">
 								<div className="outputStepHeader">
 									<h1>Final result</h1>

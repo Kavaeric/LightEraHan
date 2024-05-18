@@ -8,17 +8,19 @@ export default function OutputToken ({token}) {
     // Comes in the form of an array, [step index, token.word_position]
     const selectedToken = useContext(SelectedTokenContext);
     const setSelectedToken = useContext(SetSelectedTokenContext);
+
     // Current step the token is associated with
+    // Comes in the form of an array, [step index, total number of steps]
     const step = useContext(StepContext);
 
     // On click, do the highlighting stuff
     function handleClick() {
-        // If the selected token is, infact this one; just unset the selected token
-        if (selectedToken[0] === step && selectedToken[1] === token.word_position) {
+        // If the selected token is, in fact, this one; just unset the selected token
+        if (selectedToken[0] === step[0] && selectedToken[1] === token.word_position) {
             setSelectedToken([0, 0]);
         } else {
-            setSelectedToken([step, token.word_position]);
-            console.log(`[${step}, ${token.word_position}] ${token.display_form}`);
+            setSelectedToken([step[0], token.word_position]);
+            console.log(`[${step[0]}, ${token.word_position}] ${token.display_form}`);
             console.log(token);
         }
     }
@@ -37,14 +39,14 @@ export default function OutputToken ({token}) {
             {"tokenUnknown": token.word_type === "UNKNOWN"},
             {"tokenHasChanged": token.hasChanged},
             {"tokenHighlighted": token.word_position === selectedToken[1]},
-            {"tokenHighlightedMain": token.word_position === selectedToken[1] && step === selectedToken[0]},
+            {"tokenHighlightedMain": token.word_position === selectedToken[1] && step[0] === selectedToken[0]},
             "token_" + token.word_position)}
             onClick={handleClick}
             lang={token.langDisplay}>
 
             {
-                // Check if there is a custom Han reading assigned
-                token.han_reading
+                // Check if there is a custom Han reading assigned and if this is the last step in the sequence
+                token.han_reading && (step[0] + 1 == step[1])
                     ? <span className="tokenRuby">{token.han_reading}</span>
                     : ""
             }

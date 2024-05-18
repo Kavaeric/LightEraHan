@@ -1,55 +1,61 @@
+import { useState } from "react";
 import Papa from "papaparse"; // CSV parser
 
+let conTables = {};
+
+// Templated function for parsing a lookup table
+function newConTable(location, tableName) {
+
+    Papa.parse(location, {
+        download: true,
+        header: true,
+        comments: "//",
+        skipEmptyLines: true,
+        dynamicTyping: true,
+
+        complete: function(result) {
+            console.log(`Parsed ${location} as "${tableName}" conversion table`);
+
+            // Add the new table to the big list o' conversion tables
+            conTables[tableName] = result;
+
+            return result;
+        }
+    });
+}
+
 // Conversion tables parsed from .CSVs
-export function parseConTables() {
+function parseConTables() {
 
     // Converts a callback function into an async function
     return Promise.all(
         [
+            // Particles
             new Promise((resolve, reject) => {
-                // Particles
-                Papa.parse("contables/particles.csv", {
-                    download: true,
-                    header: true,
-                    comments: "//",
-            
-                    complete: function(result) {
-                        console.log("Parsed particles.csv");
-                        console.log(result);
-                        resolve(result.data);
-                    }
-                });
+                resolve(newConTable("contables/particles.csv", "particles"));
             }),
 
             // Kanji
             new Promise((resolve, reject) => {
-                Papa.parse("contables/custom.csv", {
-                    download: true,
-                    header: true,
-                    comments: "//",
-            
-                    complete: function(result) {
-                        console.log("Parsed custom.csv");
-                        console.log(result);
-                        resolve(result.data);
-                    }
-                });
+                resolve(newConTable("contables/kanji.csv", "kanji"));
             }),
         
             // Custom
             new Promise((resolve, reject) => {
-                Papa.parse("contables/custom.csv", {
-                    download: true,
-                    header: true,
-                    comments: "//",
-            
-                    complete: function(result) {
-                        console.log("Parsed custom.csv");
-                        console.log(result);
-                        resolve(result.data);
-                    }
-                });
+                resolve(newConTable("contables/custom.csv", "custom"));
             })
         ]
     )
 }
+
+// Returns the list of conversion tables
+function getAllTables () {
+    return conTables;
+}
+
+// Returns the data for a specific conversion table
+function getTableData (tableName) {
+    return conTables[tableName].data;
+}
+
+export default { parseConTables, getAllTables, getTableData };

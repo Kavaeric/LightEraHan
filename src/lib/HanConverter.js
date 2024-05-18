@@ -1,35 +1,46 @@
 import ChineseConverter from "./ChineseConverter"; // Simplified-Traditional Chinese converter
 import { getTokenizer, buildTokenizer } from "./Kuromoji"; // Kuromoji parser
-import { parseConTables } from "./ConversionTables";
+import ConversionTables from "./ConversionTables";
+import { matchAndReplaceAll } from "./TokenArraySearch";
 
 // Initial setup
-export function initialiseHanConverter() {
+function initialiseHanConverter() {
+
 	return Promise.all([
 		// Wait for the tokenizer to load
 		buildTokenizer(),
 
 		// Wait for the conversion tables to load
-		parseConTables()
+		ConversionTables.parseConTables()
 	])
 }
 
 // Checks if an array has had any changes and returns a bool
-export function arrayHasChanges(tokenArray) {
-	let arrayHasChanged = false;
+function arrayHasChanges(tokenArray) {
 
 	for (let token of tokenArray) {
 		if (token.hasChanged) {
-			arrayHasChanged = true;
-			break;
+			return true;
 		}
 	}
 
-	return arrayHasChanged;
+	return false
+}
+
+// Maximises kanji use via the use of a kanji conversion table
+function maximiseKanji(tokenArray) {
+
+	matchAndReplaceAll(tokenArray, ConversionTables.getTableData("kanji"));
+	removeEmptyTokens(tokenArray);
+
 }
 
 // Replace particles
 function replaceParticles(tokenArray) {
-	// TODO
+
+	matchAndReplaceAll(tokenArray, ConversionTables.getTableData("particles"));
+	removeEmptyTokens(tokenArray);
+
 }
 
 // Converts all the verbs in a token array into their non-conjugated (basic) form
@@ -59,22 +70,33 @@ function convertArrayToSimplified(tokenArray) {
 	}
 }
 
+// Removes any tokens that have no display_form
+function removeEmptyTokens(tokenArray) {
+	for (let token of tokenArray) {
+		if (token.display_form === null) {
+			tokenArray.splice(tokenArray.indexOf(token), 1);
+		}
+	}
+}
+
 // Adds the han_reading property to all tokens in the array, which gets displayed as ruby.
 // Currently using a placeholder function that just copies the existing reading info, which produces funny results with the de-conjugator
 function addReadingsToArray(tokenArray) {
 	for (let token of tokenArray) {
-		// Exclude symbols/punctuation
-		if (token.pos != "記号") {
+
+		// Exclude symbols/punctuation and anything with an existing han_reading
+		if (token.pos != "記号" && !token.han_reading) {
 			token.han_reading = token.pronunciation;
 		}
 	}
 }
 
-// Initial parsing step
-function firstConversionStep(matrix, input) {
+// Initial parsing step, and creates the first entry in the conversion matrix
+function firstConversionStep(input) {
 	
 	let conversionStep = {};
 
+	// Parse the input text and generate a token array
 	conversionStep.tokenArray = getTokenizer().tokenize(input);
 	console.log("Initial parse complete.");
 
@@ -124,24 +146,27 @@ function nextConversionStep(matrix, operation, stepDesc) {
 	return conversionStep;
 }
 
-// Main conversion function
-export function convertToHan(inputText) {
+// Main conversion pipeline
+function convertToHan(inputText) {
 
 	console.log("Submitted: " + inputText);
 
 	// Container for the entire process
 	let conversionMatrix = [];
 
-	// STEP 0: PARSE INPUT
-	conversionMatrix.push(firstConversionStep(conversionMatrix, inputText));
+	// STEP 1: PARSE INPUT
+	conversionMatrix.push(firstConversionStep(inputText));
 
-	// STEP 1: Replace particles
+	// STEP 2: REPLACE PARTICLES
 	conversionMatrix.push(nextConversionStep(conversionMatrix, replaceParticles, "Replace particles"));
 
-	// STEP 2: Unconjugate verbs
+	// STEP 3: UNCONJUGATE VERBS
 	conversionMatrix.push(nextConversionStep(conversionMatrix, unconjugateVerbs, "Unconjugate verbs"));
 
-	// STEP 3: CONVERT TO SIMPLIFIED
+	// STEP 4: MAXIMISE KANJI
+	conversionMatrix.push(nextConversionStep(conversionMatrix, maximiseKanji, "Maximise kanji"));
+
+	// STEP 5: CONVERT TO SIMPLIFIED
 	conversionMatrix.push(nextConversionStep(conversionMatrix, convertArrayToSimplified, "Convert to Simplified Chinese"));
 
 	// FINAL: ADD READINGS
@@ -152,57 +177,4 @@ export function convertToHan(inputText) {
 	return conversionMatrix;
 }
 
-
-/*function oldconvertToHan(inputText) {
-	// This will be the overarching super-array that holds all the steps
-	// At the end of the process the data will be pushed through to outputArrays
-	let tokenArrays = [];
-	let pipelineSteps = [];
-
-	// Go with current.value; otherwise fallback to the placeholder
-	console.log("Submitted: " + inputText);
-
-	// setInputParse(tokenizer.tokenize(inputText));
-	tokenArrays[0] = getTokenizer().tokenize(inputText);
-	console.log("Initial parse complete.");
-	
-	// Adding new keys allows the rest of the kuromoji token properties to be preserved
-	for (let token of tokenArrays[0]) {
-		// display_form is what is shown to the client, so the original input
-		// surface_form is preserved
-		token.display_form = token.surface_form;
-
-		// Language tag, used for typeface display purposes
-		// Typefaces are swapped in CSS depending
-		token.langDisplay = "ja";
-
-		// Logs changes so that each step can be styled appropriately
-		token.hasChanged = false;
-	}
-	console.log(tokenArrays[0]);
-
-	// STEP 1: REPLACE PARTICLES
-	nextConversionStep(tokenArrays, pipelineSteps, "Replace particles");
-	// then run a function that modifies tokenArrays.at(-1)
-
-	// STEP 2: UNCONJUGATE VERBS
-	nextConversionStep(tokenArrays, pipelineSteps, "Unconjugate verbs");
-	unconjugateVerbs(tokenArrays.at(-1));
-
-	// STEP 3: CONVERT TO SIMPLIFIED
-	nextConversionStep(tokenArrays, pipelineSteps, "Use Simplified Chinese");
-	convertArrayToSimplified(tokenArrays.at(-1));
-
-	// FINAL STEP, processing readings etc
-	nextConversionStep(tokenArrays, pipelineSteps, "Adding readings information");
-	addReadingsToArray(tokenArrays.at(-1));
-
-	// Push the final results to the appropriate containers for render
-	setOutputArrays(tokenArrays);
-	setOutputSteps(pipelineSteps);
-}*/
-
-/*const [outputSteps, setOutputSteps] = useState([]); // Array of strings describing each step, for writing headers in the DOM
-
-const [outputArrays, setOutputArrays] = useState(null); // Final output containing every step
-// Run this before every step*/
+export default { arrayHasChanges, initialiseHanConverter, convertToHan }
