@@ -31,6 +31,9 @@ root.render(
 					<li>Built using <a href="https://react.dev/" target="_blank">React</a></li>
 					<li><a href="https://github.com/takuyaa/kuromoji.js" target="_blank">Kuromoji.js</a>: Japanese morphological parser/tokenizer</li>
 					<li><a href="https://github.com/nk2028/opencc-js" target="_blank">OpenCC-JS</a>: Chinese character converter</li>
+					<li><a href="https://kanji.js.org/" target="_blank">Kanji.js</a>: Kanji lookup library</li>
+					<li><a href="https://wanakana.com/" target="_blank">Wanakana</a>: General Japanese language utilities</li>
+					<li><a href="https://github.com/junseublim/hangeul-js" target="_blank">Hangeul-JS</a>: General Hangul toolkit</li>
 					<li><a href="https://www.papaparse.com/" target="_blank">PapaParse</a>: .CSV parser</li>
 					<li><a href="https://github.com/adobe-fonts/source-han-sans/" target="_blank">Source Han Sans</a>: Pan-CJK typeface library</li>
 				</ul>

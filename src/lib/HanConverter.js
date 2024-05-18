@@ -1,7 +1,10 @@
 import ChineseConverter from "./ChineseConverter"; // Simplified-Traditional Chinese converter
 import { getTokenizer, buildTokenizer } from "./Kuromoji"; // Kuromoji parser
+import Hangulizer from "./Hangulizer";
 import ConversionTables from "./ConversionTables";
 import { matchAndReplaceAll } from "./TokenArraySearch";
+import Kanji from "./Kanji";
+import * as Wanakana from "wanakana";
 
 // Initial setup
 function initialiseHanConverter() {
@@ -16,6 +19,7 @@ function initialiseHanConverter() {
 }
 
 // Checks if an array has had any changes and returns a bool
+// TODO: Is there a way to check for changes if a character has been removed?
 function arrayHasChanges(tokenArray) {
 
 	for (let token of tokenArray) {
@@ -24,7 +28,7 @@ function arrayHasChanges(tokenArray) {
 		}
 	}
 
-	return false
+	return false;
 }
 
 // Maximises kanji use via the use of a kanji conversion table
@@ -39,6 +43,22 @@ function maximiseKanji(tokenArray) {
 function replaceParticles(tokenArray) {
 
 	matchAndReplaceAll(tokenArray, ConversionTables.getTableData("particles"));
+	removeEmptyTokens(tokenArray);
+
+}
+
+// Process auxiliary verbs
+function convertAuxVerbs(tokenArray) {
+
+	matchAndReplaceAll(tokenArray, ConversionTables.getTableData("auxVerbs"));
+	removeEmptyTokens(tokenArray);
+
+}
+
+// Replace vocab (custom list)
+function replaceVocabulary(tokenArray) {
+
+	matchAndReplaceAll(tokenArray, ConversionTables.getTableData("custom"));
 	removeEmptyTokens(tokenArray);
 
 }
@@ -60,13 +80,48 @@ function convertArrayToSimplified(tokenArray) {
 	for (let token of tokenArray) {	
 		let newForm = ChineseConverter(token.display_form);
 
-		if (token.display_form != newForm) {
+		if (token.display_form !== newForm) {
 			token.display_form = newForm;
 			token.hasChanged = true;
 		}
 
 		// Update the language display so the correct typefaces are used
 		token.langDisplay = "zh-Hans";
+	}
+}
+
+// Takes a string and converts kana within to Hangul
+function hangulizeTokenText(tokenText) {
+
+	let output = [];
+
+	// Segment input into constituent parts
+	let inputSegments = Wanakana.tokenize(tokenText);
+
+	for (let segment of inputSegments) {
+
+		// If the segment is kana, feed it through the Hangulizer
+		if (Wanakana.isKana(segment)) {
+			output.push(Hangulizer.kanaToHangul(segment));
+			continue;
+		}
+		output.push(segment);
+	}
+
+	return output.join("");
+}
+
+// Converts kana in a given token array to Hangul, ignoring kanji, romaji, etc.
+function hangulizeArray(tokenArray) {
+
+	for (let token of tokenArray) {
+
+		let newForm = hangulizeTokenText(token.display_form);
+
+		if (token.display_form !== newForm) {
+			token.display_form = newForm;
+			token.hasChanged = true;
+		}
 	}
 }
 
@@ -80,13 +135,35 @@ function removeEmptyTokens(tokenArray) {
 }
 
 // Adds the han_reading property to all tokens in the array, which gets displayed as ruby.
-// Currently using a placeholder function that just copies the existing reading info, which produces funny results with the de-conjugator
 function addReadingsToArray(tokenArray) {
 	for (let token of tokenArray) {
 
 		// Exclude symbols/punctuation and anything with an existing han_reading
 		if (token.pos != "記号" && !token.han_reading) {
-			token.han_reading = token.pronunciation;
+
+			let charList = token.display_form.split("");
+			let readingList = [];
+
+			for (let char of charList) {
+
+				// If it's kanji, push the first onyomi reading to the list
+				if (Wanakana.isKanji(char)) {
+					readingList.push(Kanji.onyomi(char));
+					continue;
+				}
+
+				// If it's kana, convert it to katakana first and then add it to the list
+				else if (Wanakana.isKana(char)) {
+					readingList.push(Wanakana.toKatakana(char));
+					continue;
+				}
+			}
+
+			if (token.reading != readingList.join("")) {
+				token.hasChanged = true;
+			}
+
+			token.han_reading = readingList.join("");
 		}
 	}
 }
@@ -157,20 +234,29 @@ function convertToHan(inputText) {
 	// STEP 1: PARSE INPUT
 	conversionMatrix.push(firstConversionStep(inputText));
 
-	// STEP 2: REPLACE PARTICLES
-	conversionMatrix.push(nextConversionStep(conversionMatrix, replaceParticles, "Replace particles"));
-
-	// STEP 3: UNCONJUGATE VERBS
+	// STEP 2: UNCONJUGATE VERBS
 	conversionMatrix.push(nextConversionStep(conversionMatrix, unconjugateVerbs, "Unconjugate verbs"));
 
-	// STEP 4: MAXIMISE KANJI
+	// STEP 3: MAXIMISE KANJI
 	conversionMatrix.push(nextConversionStep(conversionMatrix, maximiseKanji, "Maximise kanji"));
 
-	// STEP 5: CONVERT TO SIMPLIFIED
+	// STEP 4: PROCESS AUXILIARY VERBS
+	conversionMatrix.push(nextConversionStep(conversionMatrix, convertAuxVerbs, "Process auxiliary verbs"));
+
+	// STEP 5: REPLACE PARTICLES
+	conversionMatrix.push(nextConversionStep(conversionMatrix, replaceParticles, "Replace particles"));
+
+	// STEP 6: REPLACE VOCABULARY
+	conversionMatrix.push(nextConversionStep(conversionMatrix, replaceVocabulary, "Replace vocabulary"));
+
+	// STEP 7: ADD READINGS
+	conversionMatrix.push(nextConversionStep(conversionMatrix, addReadingsToArray, "Add readings"));
+	
+	// STEP 8: CONVERT TO SIMPLIFIED
 	conversionMatrix.push(nextConversionStep(conversionMatrix, convertArrayToSimplified, "Convert to Simplified Chinese"));
 
-	// FINAL: ADD READINGS
-	conversionMatrix.push(nextConversionStep(conversionMatrix, addReadingsToArray, "Add readings"));
+	// STEP 8: CONVERT KANA TO HANGUL
+	conversionMatrix.push(nextConversionStep(conversionMatrix, hangulizeArray, "Convert kana to Hangul"));
 
 	console.log(conversionMatrix)
 

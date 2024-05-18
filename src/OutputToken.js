@@ -38,7 +38,9 @@ export default function OutputToken ({token}) {
             {"tokenSymbol": token.pos === "記号"},
             {"tokenUnknown": token.word_type === "UNKNOWN"},
             {"tokenHasChanged": token.hasChanged},
+            // Highlights if this same token is selected in another row
             {"tokenHighlighted": token.word_position === selectedToken[1]},
+            // Highlights if this exact token is selected
             {"tokenHighlightedMain": token.word_position === selectedToken[1] && step[0] === selectedToken[0]},
             "token_" + token.word_position)}
             onClick={handleClick}
@@ -46,7 +48,7 @@ export default function OutputToken ({token}) {
 
             {
                 // Check if there is a custom Han reading assigned and if this is the last step in the sequence
-                token.han_reading && (step[0] + 1 == step[1])
+                token.han_reading
                     ? <span className="tokenRuby">{token.han_reading}</span>
                     : ""
             }

@@ -14,7 +14,6 @@ function convertToSimplified (inputText) {
         console.log(error);
         return(inputText);
     }
-
 }
 
 export default convertToSimplified;

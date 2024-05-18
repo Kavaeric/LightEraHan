@@ -1,4 +1,14 @@
-﻿// Custom replacements,,,,,,,,,,
-new_display_form,basic_form,conjugated_form,pos,pos_detail_1,pronunciation,reading,surface_form,word_id,word_position,word_type
-请,下さい,,助詞,非自立,,,,,,
-请,ください,,助詞,非自立,,,,,,
+﻿// Custom replacements,,,,,,,,,,,,,
+new_display_form,new_han_reading,display_form,basic_form,conjugated_form,pos,pos_detail_1,pos_detail_2,pronunciation,reading,surface_form,word_id,word_position,word_type
+样,ヨウ,,いかが,,名詞,形容動詞語幹,,,イカガ,,,,
+样,ヨウ,,如何,,名詞,形容動詞語幹,,,イカガ,,,,
+,,,の,,名詞,非自立,一般,,ノ,,,,
+怎,ソ,,どう,,副詞,助詞類接続,,,ドウ,,,,
+怎,ソ,,如何,,副詞,助詞類接続,,,ドウ,,,,
+很,,,そう,,副詞,助詞類接続,,,ソウ,,,,
+行,,,行く,,動詞,自立,,,,,,,
+// Adjectives,,,,,,,,,,,,,
+可愛,,,可愛い,,形容詞,自立,,,,,,,
+// Pronunciation,,,,,,,,,,,,,
+不,メイ,不,,,,,,,,,,,
+// Loanwords,,,,,,,,,,,,,

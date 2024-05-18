@@ -1,3 +1,10 @@
-﻿// Kanji maximiser -- use this to replace common phrases with their respective kanji,,,,,,,,,,
-new_display_form,basic_form,conjugated_form,pos,pos_detail_1,pronunciation,reading,surface_form,word_id,word_position,word_type
-為る,する,,動詞,自立,,,,,,
+﻿// Kanji maximiser -- use this to replace common phrases with their respective kanji,,,,,,,,,,,
+new_display_form,new_basic_form,basic_form,conjugated_form,pos,pos_detail_1,pronunciation,reading,surface_form,word_id,word_position,word_type
+為る,為る,する,,動詞,自立,,,,,,
+分かる,分かる,わかる,,動詞,自立,,,,,,
+下さる,下さる,くださる,,動詞,非自立,,,,,,
+如何,如何,いかが,,名詞,形容動詞語幹,,,,,,
+如何,如何,どう,,副詞,助詞類接続,,,,,,
+珈琲,珈琲,コーヒー,,名詞,一般,,,,,,
+有る,有る,あり,,動詞,自立,,,,,,
+居る,居る,いる,,動詞,自立,,,,,,

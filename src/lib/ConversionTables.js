@@ -10,7 +10,7 @@ function newConTable(location, tableName) {
         download: true,
         header: true,
         comments: "//",
-        skipEmptyLines: true,
+        skipEmptyLines: "greedy",
         dynamicTyping: true,
 
         complete: function(result) {
@@ -18,7 +18,27 @@ function newConTable(location, tableName) {
 
             // Add the new table to the big list o' conversion tables
             conTables[tableName] = result;
+            return result;
+        }
+    });
+}
 
+// Ditto, but for simple key-value pairs
+function newSimpleConTable(location, tableName) {
+
+    Papa.parse(location, {
+        download: true,
+        header: true,
+        comments: "//",
+        skipEmptyLines: "greedy",
+        dynamicTyping: true,
+
+        complete: function(result) {
+            console.log(`Parsed ${location} as "${tableName}" simple conversion table`);
+
+            // Add the new table to the big list o' conversion tables
+            conTables[tableName] = result;
+            conTables[tableName].data = result.data[0];
             return result;
         }
     });
@@ -35,14 +55,24 @@ function parseConTables() {
                 resolve(newConTable("contables/particles.csv", "particles"));
             }),
 
-            // Kanji
+             // Kanji
             new Promise((resolve, reject) => {
                 resolve(newConTable("contables/kanji.csv", "kanji"));
+            }),
+
+            // Auxiliary verbs
+            new Promise((resolve, reject) => {
+                resolve(newConTable("contables/auxVerbs.csv", "auxVerbs"));
             }),
         
             // Custom
             new Promise((resolve, reject) => {
                 resolve(newConTable("contables/custom.csv", "custom"));
+            }),
+
+            // Romaji-Hangul
+            new Promise((resolve, reject) => {
+                resolve(newSimpleConTable("contables/romajiHangul.csv", "romaHangul"));
             })
         ]
     )

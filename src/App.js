@@ -33,14 +33,13 @@ function App() {
 	// This one has no dependencies so it'll run once on startup
 	useEffect(() => {
 
-		// Async function in place: initialise the Han converter, and once done flag the converter as loaded
-		(async () => {
-			HanConverter.initialiseHanConverter();
-			setIsConverterLoaded(true);
-		})()
-
 		// Placeholder text, for when the text field is left empty
 		setPlaceholderText("日本国旗の赤い丸は太陽を象徴している。歴史は面白いよね。");
+
+		// Initialise the Han converter, and once done flag the converter as loaded
+		HanConverter.initialiseHanConverter().then((value) => {
+			setIsConverterLoaded(true)
+		});
 
 	// Defining dependencies, of which there aren't any, hence the empty array
 	// This won't change, though, so it'll just run once on startup
@@ -68,6 +67,7 @@ function App() {
 		event.preventDefault();
 		console.log("- - - - -");
 
+		setSelectedToken([0, 0]);
 		setConversionMatrix(HanConverter.convertToHan(inputField.current.value||placeholderText));
 
 		// This won't work as it won't update until next render
@@ -106,7 +106,7 @@ function App() {
 				{
 					conversionMatrix.length > 0
 						// For every tokenArray in tokenArrays, create a new outputStep div with its own tokenArrayOutput class.
-						? conversionMatrix.slice(1, -1).map((conversionStep, index) => 
+						? conversionMatrix.slice(1).map((conversionStep, index) => 
 							<StepContext.Provider value={[index + 1, conversionMatrix.length]} key={index + 1}>
 							<div className={classNames(
 								"outputStep", {"noChangesMade": !HanConverter.arrayHasChanges(conversionStep.tokenArray)})}
@@ -134,7 +134,7 @@ function App() {
 					conversionMatrix.length > 0
 						// For every tokenArray in tokenArrays, create a new outputStep div with its own tokenArrayOutput class.
 						? 	<StepContext.Provider value={[conversionMatrix.length - 1, conversionMatrix.length]}>
-							<div className="outputStep">
+							<div className="outputStep showRuby">
 								<div className="outputStepHeader">
 									<h1>Final result</h1>
 									<button onClick={() => copyReadings(conversionMatrix.at(-1).tokenArray)} className="outputCopyBtn">Copy Readings</button>
