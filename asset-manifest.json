@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/LightEraHan/static/css/main.47499f8f.css",
+    "main.js": "/LightEraHan/static/js/main.03af3efc.js",
+    "static/js/453.28f8062c.chunk.js": "/LightEraHan/static/js/453.28f8062c.chunk.js",
+    "static/media/SourceHanSansHW-VF.otf.woff2": "/LightEraHan/static/media/SourceHanSansHW-VF.otf.b8bccb957e813cf28b81.woff2",
+    "static/media/SourceHanSansHWSC-VF.otf.woff2": "/LightEraHan/static/media/SourceHanSansHWSC-VF.otf.8a2df34461324fcabf67.woff2",
+    "index.html": "/LightEraHan/index.html",
+    "main.47499f8f.css.map": "/LightEraHan/static/css/main.47499f8f.css.map",
+    "main.03af3efc.js.map": "/LightEraHan/static/js/main.03af3efc.js.map",
+    "453.28f8062c.chunk.js.map": "/LightEraHan/static/js/453.28f8062c.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.47499f8f.css",
+    "static/js/main.03af3efc.js"
+  ]
+}
