@@ -1,0 +1,68 @@
+/* Output stats*/
+div.outputStats {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    grid-template-rows: repeat(auto);
+    gap: 1rem;
+
+    margin-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, .1);
+    padding-top: 1rem;
+}
+
+div.outputStatsHeader {
+    grid-column: 1 / span 2;
+}
+
+h2 {
+    margin: 0;
+    font-size: .9rem;
+    text-transform: uppercase;
+
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: rgba(255, 255, 255, .5);
+}
+
+div.outputStatsCell {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+
+    border: 1px solid rgba(255, 255, 255, .1);
+    padding: 1rem;
+}
+
+div.outputStatsCell table {
+    width: 100%;
+    border-spacing: 0;
+}
+
+div.outputStatsCell table tr {
+    padding: 0;
+}
+
+div.outputStatsCell table td {
+    padding: .5rem;
+}
+
+div.outputStatsCell table thead th {
+    font-weight: 600;
+    text-transform: uppercase;
+    color:rgba(255, 255, 255, .5);
+}
+
+div.outputStatsCell table td:first-child,
+div.outputStatsCell table th:first-child {
+    color:rgba(255, 255, 255, .8);
+    background-color: rgba(255, 255, 255, .05);
+}
+
+div.outputStatsCell table td:not(:first-child) {
+    text-align: right;
+}
+
+/* Before/after table */
+div.beforeAfter table {
+    table-layout: fixed;
+}

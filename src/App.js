@@ -3,6 +3,8 @@ import classNames from 'classnames';
 import './App.css';
 import HanConverter from './lib/HanConverter';
 import OutputTokenArray from './OutputTokenArray';
+import OutputUtils from './OutputUtils';
+import * as MatrixUtils from "./lib/MatrixUtils";
 
 // For token highlighting
 // Stores the word_position value of a selected token
@@ -34,7 +36,7 @@ function App() {
 	useEffect(() => {
 
 		// Placeholder text, for when the text field is left empty
-		setPlaceholderText("日本国旗の赤い丸は太陽を象徴している。歴史は面白いよね。");
+		setPlaceholderText("この宇宙には知的生命体が存在するのはまず間違いないと思うが、その生命体が地球に来る可能性は殆ど無し。");
 
 		// Initialise the Han converter, and once done flag the converter as loaded
 		HanConverter.initialiseHanConverter().then((value) => {
@@ -47,19 +49,13 @@ function App() {
 
 	// Handler for the "copy" button on each output row
 	function copyOutputText(tokenArray) {
-		let copiedText = tokenArray.map(token => token.display_form);
-		navigator.clipboard.writeText(copiedText.join(""));
-		console.log("Copied " + copiedText.join("") + " to clipboard.");
+		copyToClipboard(MatrixUtils.getArrayText(tokenArray));
 	}
 
-	// Ditto, but compiles just the readings
-	function copyReadings(tokenArray) {
-		// Create an array of just the readings, falling back to the display form is none exists
-		let copiedReadings = tokenArray.map(token => token.han_reading||token.display_form)
-		
-		// Using a full-width space as a delimiter
-		navigator.clipboard.writeText(copiedReadings.join("　"));
-		console.log("Copied " + copiedReadings.join("　") + " to clipboard.");
+	// General copy function
+	function copyToClipboard(text) {
+		navigator.clipboard.writeText(text);
+		console.log("Copied " + text + " to clipboard.");
 	}
 
 	function handleSubmit(event) {
@@ -137,12 +133,17 @@ function App() {
 							<div className="outputStep showRuby">
 								<div className="outputStepHeader">
 									<h1>Final result</h1>
-									<button onClick={() => copyReadings(conversionMatrix.at(-1).tokenArray)} className="outputCopyBtn">Copy Readings</button>
 									<button onClick={() => copyOutputText(conversionMatrix.at(-1).tokenArray)} className="outputCopyBtn">Copy Text</button>
 								</div>
 								<div className="tokenArrayOutput resultOutput">
 									<OutputTokenArray tokens={conversionMatrix.at(-1).tokenArray} />
 								</div>
+								<div className="finalStepButtons">
+									<button onClick={() => copyToClipboard(MatrixUtils.getJAReading(conversionMatrix.at(-1).tokenArray))} className="finalCopyBtn">Copy JA Readings</button>
+									<button onClick={() => copyToClipboard(MatrixUtils.getCNReading(conversionMatrix.at(-1).tokenArray))} className="finalCopyBtn">Copy CN Readings</button>
+									<button onClick={() => copyToClipboard(MatrixUtils.getKRReading(conversionMatrix.at(-1).tokenArray))} className="finalCopyBtn">Copy KR Readings</button>
+								</div>
+								<OutputUtils matrix={conversionMatrix} />
 							</div>
 							</StepContext.Provider>
 						// Otherwise, output nothing

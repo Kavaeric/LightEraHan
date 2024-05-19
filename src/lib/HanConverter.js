@@ -6,6 +6,16 @@ import { matchAndReplaceAll } from "./TokenArraySearch";
 import Kanji from "./Kanji";
 import * as Wanakana from "wanakana";
 
+// List of all verb token descriptors to be used by the unconjugator
+const verbTokens = ["動詞", "助動詞"];
+// And list of common verb endings
+// const verbEndings = "るすうむぶ".slice("");
+const verbEndings = "るう".slice("");
+
+// Adjective token descriptors and common endings
+const adjTokens = ["形容詞"];
+const adjEndings = "いき".slice("");
+
 // Initial setup
 function initialiseHanConverter() {
 
@@ -66,8 +76,53 @@ function replaceVocabulary(tokenArray) {
 // Converts all the verbs in a token array into their non-conjugated (basic) form
 function unconjugateVerbs(tokenArray) {
 	for (let token of tokenArray) {	
-		if (token.pos === "動詞" && token.display_form != token.basic_form) {
+		if (verbTokens.includes(token.pos) && token.display_form != token.basic_form) {
 			token.display_form = token.basic_form;
+
+			token.hasChanged = true;
+		}
+	}
+}
+
+// Removes the ending of verbs
+function sliceVerbs(tokenArray) {
+
+	for (let token of tokenArray) {	
+		if (verbTokens.includes(token.pos)) {
+			
+			// Remove verb ending
+			if (verbEndings.includes(token.display_form.slice(-1))) {
+
+				if (token.display_form.length === 1) {
+					console.log(`Attempted to verb-slice ${token.display_form}, but it only consists of one character.`);
+					continue;
+				}
+
+				token.display_form = token.display_form.slice(0, -1);
+			}
+
+			token.hasChanged = true;
+		}
+	}
+}
+
+// Remove ending of adjectives
+function sliceAdjectives(tokenArray) {
+
+	for (let token of tokenArray) {	
+		if (adjTokens.includes(token.pos)) {
+			
+			// Remove the verb -ru ending
+			if (adjEndings.includes(token.display_form.slice(-1))) {
+
+				if (token.display_form.length === 1) {
+					console.log(`Attempted to adj-slice ${token.display_form}, but it only consists of one character.`);
+					continue;
+				}
+
+				token.display_form = token.display_form.slice(0, -1);
+			}
+
 			token.hasChanged = true;
 		}
 	}
@@ -243,19 +298,25 @@ function convertToHan(inputText) {
 	// STEP 4: PROCESS AUXILIARY VERBS
 	conversionMatrix.push(nextConversionStep(conversionMatrix, convertAuxVerbs, "Process auxiliary verbs"));
 
-	// STEP 5: REPLACE PARTICLES
+	// STEP 5: SLICE VERBS
+	conversionMatrix.push(nextConversionStep(conversionMatrix, sliceVerbs, "Slice verbs"));
+
+	// STEP 6: SLICE ADJECTIVES
+	conversionMatrix.push(nextConversionStep(conversionMatrix, sliceAdjectives, "Slice adjectives"));
+
+	// STEP 7: REPLACE PARTICLES
 	conversionMatrix.push(nextConversionStep(conversionMatrix, replaceParticles, "Replace particles"));
 
-	// STEP 6: REPLACE VOCABULARY
+	// STEP 8: REPLACE VOCABULARY
 	conversionMatrix.push(nextConversionStep(conversionMatrix, replaceVocabulary, "Replace vocabulary"));
 
-	// STEP 7: ADD READINGS
+	// STEP 9: ADD READINGS
 	conversionMatrix.push(nextConversionStep(conversionMatrix, addReadingsToArray, "Add readings"));
 	
-	// STEP 8: CONVERT TO SIMPLIFIED
+	// STEP 10: CONVERT TO SIMPLIFIED
 	conversionMatrix.push(nextConversionStep(conversionMatrix, convertArrayToSimplified, "Convert to Simplified Chinese"));
 
-	// STEP 8: CONVERT KANA TO HANGUL
+	// STEP 11: CONVERT KANA TO HANGUL
 	conversionMatrix.push(nextConversionStep(conversionMatrix, hangulizeArray, "Convert kana to Hangul"));
 
 	console.log(conversionMatrix)

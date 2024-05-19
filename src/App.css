@@ -8,7 +8,7 @@ div.inputHeader {
 form.inputForm {
     display: grid;
     grid-template-rows: auto auto;
-    grid-template-columns: auto 9rem;
+    grid-template-columns: auto 10rem;
     grid-template-areas: "label label" "field button";
     gap: .5rem;
 }
@@ -100,6 +100,7 @@ div.outputStep h1 {
 
 div.outputStepHeader button.outputCopyBtn {
     padding: .3rem .6rem;
+    font-size: .8rem;
 }
 div.outputStepHeader button.outputCopyBtn:first-of-type {
     margin-left: auto;
@@ -287,4 +288,13 @@ div.tokenArrayOutput.resultOutput
     button.tokenOutput:not(:active):not(.tokenHighlightedMain) {
     background: transparent;
     box-shadow: none;
+}
+
+/* Final output row buttons */
+div.outputStep div.finalStepButtons {
+    display: flex;
+    align-items: justify;
+    height: 3rem;
+    gap: .5rem;
+    margin-top: 2rem;
 }
