@@ -281,7 +281,6 @@
     "get-package-type": "^0.1.0",
     "get-stream": "^6.0.1",
     "get-symbol-description": "^1.0.2",
-    "gh-pages": "^6.1.1",
     "glob": "^7.2.3",
     "glob-parent": "^6.0.2",
     "glob-to-regexp": "^0.4.1",
@@ -880,5 +879,8 @@
     "type": "git",
     "url": "LightEraHan"
   },
-  "author": "Kavaeric"
+  "author": "Kavaeric",
+  "devDependencies": {
+    "gh-pages": "^6.1.1"
+  }
 }
