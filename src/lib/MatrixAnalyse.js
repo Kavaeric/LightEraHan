@@ -35,16 +35,6 @@ export function getJAReading(inputArray) {
 
 	let tokenArray = structuredClone(inputArray);
 
-	// To help with inflection, punctuation is placed after each particle
-	for (let token of tokenArray) {
-
-		// Any particles but final
-		if (token.pos === "助詞"
-			&& token.display_form === "于") {
-			token.han_reading += "、";
-		}
-	}
-
 	// Join the output with fullwidth spaces
 	return getArrayReadings(tokenArray, true, "　");
 }
@@ -53,16 +43,6 @@ export function getJAReading(inputArray) {
 export function getCNReading(inputArray) {
 
 	let tokenArray = structuredClone(inputArray);
-
-	// To help with inflection, punctuation is placed after each particle
-	for (let token of tokenArray) {
-
-		// Any particles but final
-		if (token.pos === "助詞"
-			&& token.display_form === "于") {
-			token.display_form += "，";
-		}
-	}
 
 	// Get the text only
 	let splitArray = getArrayText(tokenArray);
@@ -108,12 +88,7 @@ export function getKRReading(inputArray) {
 		} else {
 			hangulReading += token.display_form;
 		}
-
-		if (token.pos === "助詞"
-			&& token.display_form === "于") {
-			
-			hangulReading += " ";
-		}
+		
 	}
 	return hangulReading;
 }
