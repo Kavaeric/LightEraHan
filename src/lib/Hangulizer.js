@@ -56,7 +56,8 @@ function kanaToHangul(input) {
 	// Pass it through the handleDigraphs function
 	jamoList = jamoList.map((syllable, index) =>
 		
-		syllable.at(-1) === "っ" || syllable.at(-1) === "ん"
+		(syllable.at(-1) === "っ" || syllable.at(-1) === "ん")
+		&& jamoList[index+1]
 			? handleDigraphs(syllable, jamoList[index+1][0])
 			: syllable
 
