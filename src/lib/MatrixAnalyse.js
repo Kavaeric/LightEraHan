@@ -3,7 +3,8 @@ import * as Wanakana from "wanakana";
 import * as HangulJS from "hangeul-js";
 import * as HangulRoma from "@romanize/korean";
 import Hangulizer from "./Hangulizer";
-
+import CharLib from "./CharLib";
+import punctConversion from "./punctConversion.json";
 
 // Extracts the display_form text from an array
 export function getArrayText(tokenArray, join = true, delimiter = "") {
@@ -20,7 +21,7 @@ export function getArrayText(tokenArray, join = true, delimiter = "") {
 // Extracts the display_form text from an array
 export function getArrayReadings(tokenArray, join = true, delimiter = "") {
 
-	let readings = tokenArray.map((token) => token.han_reading||token.reading);
+	let readings = tokenArray.map((token) => token.han_reading||token.reading||token.display_form);
 
 	if (join) {
 		return readings.join(delimiter)
@@ -100,8 +101,10 @@ export function getKRReading(inputArray) {
 	// To help with inflection, punctuation is placed after each particle
 	for (let token of inputArray) {
 		
-		if (token.pos !== "記号") {
+		if (token.pos !== "記号" && token.word_type === "KNOWN") {
 			hangulReading += Hangulizer.kanaToHangul(token.han_reading);
+		} else if (token.pos === "記号" && token.display_form in punctConversion) {
+			hangulReading += punctConversion[token.display_form];
 		} else {
 			hangulReading += token.display_form;
 		}
@@ -112,7 +115,6 @@ export function getKRReading(inputArray) {
 			hangulReading += " ";
 		}
 	}
-
 	return hangulReading;
 }
 
@@ -164,14 +166,57 @@ export function countChangesInArray(tokenArray) {
 	return changes;
 }
 
-// Counts the number of changes across an entire matrix
-export function countChangesInMatrix(conMatrix) {
+// Counts the number of tokens that have at least 1 change during the conversion so far
+export function countChangedTokens (tokenArray) {
+
+	let changedTokens = 0;
+
+	for (let token of tokenArray) {
+		if (token.changeCount > 0) {
+			changedTokens++;
+		}
+	}
+
+	return changedTokens;
+}
+
+// Sums the number of token changes done so far at a given step
+export function countTokenChangesSoFar (tokenArray) {
 
 	let changes = 0;
 
-	for (let step of conMatrix) {
-		changes += countChangesInArray(step.tokenArray);
+	for (let token of tokenArray) {
+		changes += token.changeCount;
 	}
 
 	return changes;
+}
+
+// Counts the number of strokes in a token
+export function countStrokesInToken (token) {
+
+	let strokeCount = 0;
+
+	if (token.pos !== "記号") {
+		for (let char of token.display_form.split("")) {
+			strokeCount += CharLib.getStrokeCount(char);
+		}
+	} else {
+		// console.log(`countStrokesInToken: ${token.display_form} is not a character.`)
+	}
+
+	return strokeCount;
+
+}
+
+// Counts the number of strokes in an array
+export function countStrokesInArray (tokenArray) {
+
+	let strokeCount = 0;
+
+	for (let token of tokenArray) {
+		strokeCount += countStrokesInToken(token);
+	}
+
+	return strokeCount;
 }

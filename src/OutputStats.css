@@ -33,6 +33,7 @@ div.outputStatsCell {
     padding: 1rem;
 }
 
+/* Stats tables */
 div.outputStatsCell table {
     width: 100%;
     border-spacing: 0;
@@ -42,14 +43,20 @@ div.outputStatsCell table tr {
     padding: 0;
 }
 
-div.outputStatsCell table td {
+div.outputStatsCell table tr td {
     padding: .5rem;
 }
 
 div.outputStatsCell table thead th {
     font-weight: 600;
+    text-align: right;
     text-transform: uppercase;
     color:rgba(255, 255, 255, .5);
+}
+
+div.outputStatsCell table thead th,
+div.outputStatsCell table tr:not(:last-of-type) td {
+    border-bottom: 1px solid rgba(255, 255, 255, .1);
 }
 
 div.outputStatsCell table td:first-child,

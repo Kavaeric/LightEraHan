@@ -2,8 +2,6 @@ import * as Wanakana from "wanakana";
 
 // List of characters that should be merged with the last to form a syllable
 const kanaDigraphChars = "ョュャッンょゅゃっん".split("");
-const kanaVowels = "アイウエオーあいうえお".split("");
-const kanaMerge = kanaDigraphChars.concat(kanaVowels);
 const romaVowels = "aiueo".split("");
 const romaConst = "kstnhmyrwgzdbp".split("");
 const kanaPunct = "。、＜＞「」：　".split("");
@@ -38,11 +36,11 @@ function mergeWithLastFilter(inputArray, filterArray, excludeArray = []) {
 }
 
 // Split a string of Japanese kana into its syllables
-export function kanaToHangulSyllables(input) {
+export function kanaToSyllables(input) {
 
     // Merge the digraphs in Japanese
-    let output = mergeWithLastFilter(input.split(""), kanaMerge);
-
+    let output = mergeWithLastFilter(input.split(""), kanaDigraphChars);
+    
     return output;
 }
 
@@ -56,7 +54,6 @@ export function arrayToRomajiGroups(inputArray) {
         // Convert each item in the input array to romaji
         let roma = Wanakana.toRomaji(item);
 
-        // Running these filters results in splitting consonants from vowels
         let outputToken = mergeWithLastFilter(roma.split(""), romaConst, romaVowels);
 
         outputArray.push(outputToken);

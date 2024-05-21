@@ -71,5 +71,6 @@ export function matchAndReplaceAll(tokenArray, lookup) {
 		// console.log(`Replacing ${token.display_form} with ${matchingEntry.new_display_form}`);
 		tokenReplaceWithNewValues(token, matchingEntry);
 		token.hasChanged = true;
+		token.changeCount++;
 	}
 }

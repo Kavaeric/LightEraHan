@@ -62,6 +62,7 @@ a:active {
 	opacity: .5;
 }
 
+a.buttonLink,
 button {
     border: 2px solid rgba(255, 255, 255, .5);
 	padding: .5em 1.2em;
@@ -77,19 +78,19 @@ button {
 
     transition: all .1s;
 }
-button:hover,
-button:focus {
+button:hover, a.buttonLink:hover,
+button:focus, a.buttonLink:focus {
     background-color: #fff;
     color: #222;
     cursor: pointer;
 }
-button:active {
+button:active, a.buttonLink:active {
     opacity: .5;
 }
 
-button:disabled,
-button:disabled:hover,
-button:disabled:active {
+button:disabled, a.buttonLink:disabled,
+button:disabled:hover, a.buttonLink:disabled:hover
+button:disabled:active, a.buttonLink:disabled:active {
     border: 1px solid #f55;
     background: rgba(255, 0, 0, .1);
     background: linear-gradient(30deg, rgba(255, 0, 0, .1) 49%, #f55 49%, #f55 51%, rgba(255, 0, 0, .1) 51%);
@@ -134,4 +135,12 @@ div.footerAbout h1 {
 	text-transform: uppercase;
 	font-weight: 600;
 	letter-spacing: 0.05em;
+}
+
+div.footerAbout h2 {
+	border-bottom: 1px solid rgba(255, 255, 255, .1);
+}
+
+div.footerAbout ul {
+	margin: 1em 0;
 }

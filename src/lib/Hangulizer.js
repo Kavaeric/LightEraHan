@@ -1,76 +1,72 @@
-import ConversionTables from "./ConversionTables";
 import * as HangulJS from "hangeul-js";
 import * as Wanakana from "wanakana";
-import { arrayToRomajiGroups, kanaToHangulSyllables } from "./JapaneseUtils";
+import { kanaToSyllables } from "./JapaneseUtils";
 
-// Takes a string and returns the jamo via the lookup table; returns the same string if not found
-function romaToJamoLookup (input) {
+import kanaHangulDict from "./kanaHangul.json";
 
-    let conTable = ConversionTables.getTableData("romaHangul");
+// Handles any kana digraphs that aren't map-able to Hangul
+function handleDigraphs (token, nextChar) {
 
-    if (input in conTable) {
-        return conTable[input];
-    }
+	let newTokenStr = "";
 
-    return input;
+	for (let char of token) {
+
+		// If it's a normal character in the lookup table, convert it
+		if (char in kanaHangulDict) {
+			newTokenStr += kanaHangulDict[char];
+		}
+		else {
+			switch (char) {
+				// Use the next character if it's a consonant doubler
+				case "っ":
+					newTokenStr += nextChar;
+					break;
+		
+				// Handle the "n" syllable
+				case "ん":
+					newTokenStr += "ㄴ";
+					break;
+		
+				default:
+					console.log(`Character ${char} in ${token.join("")} could not be processed`);
+					newTokenStr += char;
+			}
+		}
+	}
+
+	let newToken = HangulJS.disassemble(newTokenStr);
+	return newToken;
 }
 
-// Turns an array of kana into Hangul
-function kanaArrayToHangul (input) {
+// Main kana conversion function
+function kanaToHangul(input) {
 
-    // Converts the incoming kana array into romanji, grouped by consonants/sound
-    let inputRomaGroups = arrayToRomajiGroups(input);
-    let jamoArray = [];
+	let syllables = kanaToSyllables(Wanakana.toHiragana(input, {passRomaji: true} ));
+	
+	// First convert all the syllables that can be easily mapped to Hangul
+	let jamoList = syllables.map(syllable => 
+		
+		syllable in kanaHangulDict
+			? HangulJS.disassemble(kanaHangulDict[syllable])
+			: syllable.split("")
+	
+	);
 
-    for (let token of inputRomaGroups) {
+	// Anything left that isn't a Hangul character is going to be something that ends in っ or ん
+	// Pass it through the handleDigraphs function
+	jamoList = jamoList.map((syllable, index) =>
+		
+		syllable.at(-1) === "っ" || syllable.at(-1) === "ん"
+			? handleDigraphs(syllable, jamoList[index+1][0])
+			: syllable
 
-        let newToken = [];
+	);
 
-        // Convert each group in each token to a collection of jamo
-        newToken = token.map((group) => romaToJamoLookup(group));
-        jamoArray.push(newToken);
-    }
+	// Finally, assemble everything to Hangul
+	let hangulOutput = jamoList.map(token => HangulJS.assemble(token)).join("");
 
-    // Then, combine each of those jamo into a coherent character
-    let output = jamoArray.map((jamoGroup) => hangulFromJamo(jamoGroup));
-
-    return output;
-}
-
-// Combines Hangul jamo into coherent syllables
-function hangulFromJamo (input) {
-
-    let output = "";
-
-    // Assemble the input, but check for any isolated vowels
-    for (let char of HangulJS.assemble(input)) {
-
-        // If it's a lone vowel, assemble that vowel with the null start consonant
-        if (HangulJS.isMoeum(char)) {
-            //console.log(`Moeum detected: ${char}`);
-            output += HangulJS.assemble(["ㅇ", char]);
-            continue;
-        }
-
-        output += char;
-    }
-
-    return output;
-}
-
-// Main conversion function from Japanese kana to Korean Hangul
-function kanaToHangul (input) {
-
-    // First check if it's actually Japanese kana
-    if (!Wanakana.isKana(input)) {
-        console.log("Hangulizer.js ERROR: Input string is not kana.");
-        return input;
-    }
-
-    let output = kanaToHangulSyllables(input);
-    output = kanaArrayToHangul(output)
-
-    return output.join("");
+	// console.log(`kanaToHangul: Converted ${input} to ${hangulOutput}`);
+	return hangulOutput;
 }
 
 export default { kanaToHangul };

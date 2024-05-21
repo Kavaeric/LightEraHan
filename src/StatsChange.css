@@ -1,13 +1,28 @@
+span.statsChangeWrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    align-items: center;
+}
+
 span.change {
     color: rgba(255, 255, 255, .2);
 }
 
+span.change:last-of-type {
+    margin-left: .8em;
+}
+
+span.up:last-of-type,
+span.down:last-of-type {
+    margin-left: .8em;
+    font-weight: bold;
+}
+
 span.up {
     color: #f77;
-    font-weight: bold;
 }
 
 span.down {
     color: #5fa;
-    font-weight: bold;
 }

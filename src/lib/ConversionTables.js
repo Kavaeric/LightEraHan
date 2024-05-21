@@ -23,27 +23,6 @@ function newConTable(location, tableName) {
     });
 }
 
-// Ditto, but for simple key-value pairs
-function newSimpleConTable(location, tableName) {
-
-    Papa.parse(location, {
-        download: true,
-        header: true,
-        comments: "//",
-        skipEmptyLines: "greedy",
-        dynamicTyping: true,
-
-        complete: function(result) {
-            console.log(`Parsed ${location} as "${tableName}" simple conversion table`);
-
-            // Add the new table to the big list o' conversion tables
-            conTables[tableName] = result;
-            conTables[tableName].data = result.data[0];
-            return result;
-        }
-    });
-}
-
 // Conversion tables parsed from .CSVs
 function parseConTables() {
 
@@ -68,11 +47,6 @@ function parseConTables() {
             // Custom
             new Promise((resolve, reject) => {
                 resolve(newConTable("contables/custom.csv", "custom"));
-            }),
-
-            // Romaji-Hangul
-            new Promise((resolve, reject) => {
-                resolve(newSimpleConTable("contables/romajiHangul.csv", "romaHangul"));
             })
         ]
     )

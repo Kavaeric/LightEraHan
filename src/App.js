@@ -3,8 +3,8 @@ import classNames from 'classnames';
 import './App.css';
 import HanConverter from './lib/HanConverter';
 import OutputTokenArray from './OutputTokenArray';
-import OutputUtils from './OutputUtils';
-import * as MatrixUtils from "./lib/MatrixUtils";
+import OutputStats from './OutputStats';
+import * as MatrixUtils from "./lib/MatrixAnalyse";
 
 // For token highlighting
 // Stores the word_position value of a selected token
@@ -143,7 +143,7 @@ function App() {
 									<button onClick={() => copyToClipboard(MatrixUtils.getCNReading(conversionMatrix.at(-1).tokenArray))} className="finalCopyBtn">Copy CN Readings</button>
 									<button onClick={() => copyToClipboard(MatrixUtils.getKRReading(conversionMatrix.at(-1).tokenArray))} className="finalCopyBtn">Copy KR Readings</button>
 								</div>
-								<OutputUtils matrix={conversionMatrix} />
+								<OutputStats matrix={conversionMatrix} />
 							</div>
 							</StepContext.Provider>
 						// Otherwise, output nothing

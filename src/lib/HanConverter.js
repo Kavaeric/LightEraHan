@@ -3,7 +3,7 @@ import { getTokenizer, buildTokenizer } from "./Kuromoji"; // Kuromoji parser
 import Hangulizer from "./Hangulizer";
 import ConversionTables from "./ConversionTables";
 import { matchAndReplaceAll } from "./TokenArraySearch";
-import Kanji from "./Kanji";
+import Kanji from "./CharLib";
 import * as Wanakana from "wanakana";
 
 // List of all verb token descriptors to be used by the unconjugator
@@ -26,6 +26,14 @@ function initialiseHanConverter() {
 		// Wait for the conversion tables to load
 		ConversionTables.parseConTables()
 	])
+}
+
+// Flags a token as having been changed
+function setTokenHasChanged(token) {
+
+	token.hasChanged = true;
+	token.changeCount++;
+
 }
 
 // Checks if an array has had any changes and returns a bool
@@ -79,7 +87,7 @@ function unconjugateVerbs(tokenArray) {
 		if (verbTokens.includes(token.pos) && token.display_form != token.basic_form) {
 			token.display_form = token.basic_form;
 
-			token.hasChanged = true;
+			setTokenHasChanged(token);
 		}
 	}
 }
@@ -101,7 +109,7 @@ function sliceVerbs(tokenArray) {
 				token.display_form = token.display_form.slice(0, -1);
 			}
 
-			token.hasChanged = true;
+			setTokenHasChanged(token);
 		}
 	}
 }
@@ -123,7 +131,7 @@ function sliceAdjectives(tokenArray) {
 				token.display_form = token.display_form.slice(0, -1);
 			}
 
-			token.hasChanged = true;
+			setTokenHasChanged(token);
 		}
 	}
 }
@@ -137,7 +145,7 @@ function convertArrayToSimplified(tokenArray) {
 
 		if (token.display_form !== newForm) {
 			token.display_form = newForm;
-			token.hasChanged = true;
+			setTokenHasChanged(token);
 		}
 
 		// Update the language display so the correct typefaces are used
@@ -175,7 +183,7 @@ function hangulizeArray(tokenArray) {
 
 		if (token.display_form !== newForm) {
 			token.display_form = newForm;
-			token.hasChanged = true;
+			setTokenHasChanged(token);
 		}
 	}
 }
@@ -203,7 +211,7 @@ function addReadingsToArray(tokenArray) {
 
 				// If it's kanji, push the first onyomi reading to the list
 				if (Wanakana.isKanji(char)) {
-					readingList.push(Kanji.onyomi(char));
+					readingList.push(Kanji.getOnyomi(char));
 					continue;
 				}
 
@@ -215,7 +223,7 @@ function addReadingsToArray(tokenArray) {
 			}
 
 			if (token.reading != readingList.join("")) {
-				token.hasChanged = true;
+				setTokenHasChanged(token);
 			}
 
 			token.han_reading = readingList.join("");
@@ -241,8 +249,11 @@ function firstConversionStep(input) {
 		// Typefaces are swapped in CSS depending
 		token.langDisplay = "ja";
 
-		// Logs changes so that each step can be styled appropriately
+		// Flag, if the token was changed from the last step
 		token.hasChanged = false;
+
+		// Counts the number of changes a token has undergone
+		token.changeCount = 0;
 	}
 
 	console.log(conversionStep.tokenArray);

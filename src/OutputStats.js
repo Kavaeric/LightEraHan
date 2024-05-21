@@ -1,6 +1,5 @@
-import "./OutputUtils.css";
-import * as Wanakana from "wanakana";
-import * as MatrixUtils from "./lib/MatrixUtils";
+import "./OutputStats.css";
+import * as MatrixUtils from "./lib/MatrixAnalyse";
 import StatsChange from "./StatsChange";
 
 export default function OutputStats ({matrix}) {
@@ -25,7 +24,12 @@ export default function OutputStats ({matrix}) {
 
 					<tr>
 						<td>Changes made</td>
-						<td>{MatrixUtils.countChangesInMatrix(matrix)}</td>
+						<td>{MatrixUtils.countTokenChangesSoFar(lastArray)}</td>
+					</tr>
+
+					<tr>
+						<td>Tokens modified</td>
+						<td>{MatrixUtils.countChangedTokens(lastArray)}</td>
 					</tr>
 				</tbody>
 			</table>
@@ -63,6 +67,14 @@ export default function OutputStats ({matrix}) {
 					<td>{MatrixUtils.countSyllablesInArray(lastArray)}</td>
 					<td><StatsChange beforeVal={MatrixUtils.countSyllablesInArray(firstArray)}
 									 afterVal={MatrixUtils.countSyllablesInArray(lastArray)}/></td>
+				</tr>
+
+				<tr>
+					<td>Strokes</td>
+					<td>{MatrixUtils.countStrokesInArray(firstArray)}</td>
+					<td>{MatrixUtils.countStrokesInArray(lastArray)}</td>
+					<td><StatsChange beforeVal={MatrixUtils.countStrokesInArray(firstArray)}
+									 afterVal={MatrixUtils.countStrokesInArray(lastArray)}/></td>
 				</tr>
 				</tbody>
 			</table>

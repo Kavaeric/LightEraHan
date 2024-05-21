@@ -3,30 +3,37 @@ import classNames from "classnames";
 
 export default function OutputStats ({beforeVal, afterVal}) {
 
-    const change = afterVal - beforeVal;
+	const change = afterVal - beforeVal;
+	const percentChange = 100 * (change / beforeVal);
+	const changeClass = classNames(
+		"change",
+		{"up": change > 0},
+		{"down": change < 0}
+	)
 
-    return(
+	return(
+		<span className="statsChangeWrapper">
+			{
+				(change !== 0)
+					?
+						<>
+						<span className={changeClass}>
 
-        <span className={classNames(
-            "change",
-            {"up": change > 0},
-            {"down": change < 0}
-        )}>
-            
-            {
-                change > 0
-                ? "▲ "
-                : ""
-            }
-            {
-                change < 0
-                ? "▼ "
-                : ""
-            }
+							{change > 0 ? "+" : ""}{percentChange.toFixed(1)}%
 
-            {change.toString().replace("-", "")}
-        </span>
+						</span>
 
-    );
+						<span className={changeClass}>
+							
+							{ change > 0 ? "▲ " : "" }
+							{ change < 0 ? "▼ " : "" }
+
+							{change.toString().replace("-", "")}
+						</span>
+						</>
+					: <span className={changeClass}>-</span>
+			}
+		</span>
+	);
 
 }
