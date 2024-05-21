@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/static/css/main.b204cef0.css",
-    "main.js": "/static/js/main.5e7f1eaf.js",
-    "static/js/453.374b1430.chunk.js": "/static/js/453.374b1430.chunk.js",
-    "static/media/SourceHanSansHW-VF.otf.woff2": "/static/media/SourceHanSansHW-VF.otf.b8bccb957e813cf28b81.woff2",
-    "static/media/SourceHanSansHWSC-VF.otf.woff2": "/static/media/SourceHanSansHWSC-VF.otf.8a2df34461324fcabf67.woff2",
-    "index.html": "/index.html",
-    "main.b204cef0.css.map": "/static/css/main.b204cef0.css.map",
-    "main.5e7f1eaf.js.map": "/static/js/main.5e7f1eaf.js.map",
-    "453.374b1430.chunk.js.map": "/static/js/453.374b1430.chunk.js.map"
+    "main.css": "/LightEraHan/static/css/main.22415049.css",
+    "main.js": "/LightEraHan/static/js/main.cf43a179.js",
+    "static/js/453.374b1430.chunk.js": "/LightEraHan/static/js/453.374b1430.chunk.js",
+    "static/media/SourceHanSansHW-VF.otf.woff2": "/LightEraHan/static/media/SourceHanSansHW-VF.otf.b8bccb957e813cf28b81.woff2",
+    "static/media/SourceHanSansHWSC-VF.otf.woff2": "/LightEraHan/static/media/SourceHanSansHWSC-VF.otf.8a2df34461324fcabf67.woff2",
+    "index.html": "/LightEraHan/index.html",
+    "main.22415049.css.map": "/LightEraHan/static/css/main.22415049.css.map",
+    "main.cf43a179.js.map": "/LightEraHan/static/js/main.cf43a179.js.map",
+    "453.374b1430.chunk.js.map": "/LightEraHan/static/js/453.374b1430.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.b204cef0.css",
-    "static/js/main.5e7f1eaf.js"
+    "static/css/main.22415049.css",
+    "static/js/main.cf43a179.js"
   ]
 }
