@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Convert Japanese into the Light Era pseudolanguage, Han.",
   "main": "index.js",
+  "homepage": "https://kavaeric.github.io/LightEraHan",
   "dependencies": {
     "@romanize/korean": "^0.1.1",
     "abab": "^2.0.6",
