@@ -1,12 +1,13 @@
-import kuromoji, { reject } from "kuromoji/build/kuromoji"; // Japanese language parser
+import kuromoji from "@sglkc/kuromoji" // Japanese language parser
 
 let tokenizer = null;
+let DICT_PATH = "kuromoji/dict/"
 
 export function buildTokenizer() {
     // Converts a callback function into an async function
     return new Promise((resolve, reject) => {
         // Initialise the tokenizer
-        kuromoji.builder({ dicPath: "kuromoji/dict/" }).build(function (error, _tokenizer) {
+        kuromoji.builder({ dicPath: DICT_PATH }).build(function (error, _tokenizer) {
             if (error != null) {
                 reject(error);
                 return;
