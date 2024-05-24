@@ -73,6 +73,7 @@ function App() {
 	// DOM render
 	return (
 		<div className="appContainer">
+
 		<div className="inputHeader">
 			<form className="inputForm contain-width" onSubmit={handleSubmit}>
 				<label className="inputTextLabel" htmlFor="inputText">Input Japanese text:</label>

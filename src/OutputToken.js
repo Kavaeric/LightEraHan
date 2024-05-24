@@ -29,7 +29,7 @@ export default function OutputToken ({token}) {
         // Style the token depending on its content
         <button className={
             classNames("tokenOutput", 
-            {"tokenNoun": token.pos === "名詞" && token.pos_detail_1 != "固有名詞"}, // Excluding proper nouns
+            {"tokenNoun": token.pos === "名詞" && token.pos_detail_1 !== "固有名詞"}, // Excluding proper nouns
             {"tokenParticle": token.pos === "助詞"},
             {"tokenVerb": token.pos === "動詞"},
             {"tokenVerbAux": token.pos === "助動詞"},

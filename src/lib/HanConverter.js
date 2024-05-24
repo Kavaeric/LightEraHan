@@ -84,7 +84,7 @@ function replaceVocabulary(tokenArray) {
 // Converts all the verbs in a token array into their non-conjugated (basic) form
 function unconjugateVerbs(tokenArray) {
 	for (let token of tokenArray) {	
-		if (verbTokens.includes(token.pos) && token.display_form != token.basic_form) {
+		if (verbTokens.includes(token.pos) && token.display_form !== token.basic_form) {
 			token.display_form = token.basic_form;
 
 			setTokenHasChanged(token);
@@ -202,7 +202,7 @@ function addReadingsToArray(tokenArray) {
 	for (let token of tokenArray) {
 
 		// Exclude symbols/punctuation and anything with an existing han_reading
-		if (token.pos != "記号" && !token.han_reading) {
+		if (token.pos !== "記号" && !token.han_reading) {
 
 			let charList = token.display_form.split("");
 			let readingList = [];
@@ -222,7 +222,7 @@ function addReadingsToArray(tokenArray) {
 				}
 			}
 
-			if (token.reading != readingList.join("")) {
+			if (token.reading !== readingList.join("")) {
 				setTokenHasChanged(token);
 			}
 
