@@ -1,300 +1,299 @@
 /* Input form */
 div.inputHeader {
-    padding: 1rem;
-    padding-top: 2rem;
-    background-color: rgba(255, 255, 255, .12);
+	padding: 1rem;
+	padding-top: 2rem;
+	background-color: var(--backgroundLightLow);
 }
 
 form.inputForm {
-    display: grid;
-    grid-template-rows: auto auto;
-    grid-template-columns: auto 10rem;
-    grid-template-areas: "label label" "field button";
-    gap: .5rem;
+	display: grid;
+	grid-template-rows: auto auto;
+	grid-template-columns: auto 10rem;
+	grid-template-areas: "label label" "field button";
+	gap: .5rem;
 }
 
 label.inputTextLabel {
-    grid-area: label;
+	grid-area: label;
 
-    margin: 0;
-    font-size: 1rem;
-    text-transform: uppercase;
+	margin: 0;
+	font-size: 1rem;
+	text-transform: uppercase;
 
-    font-weight: 600;
-    letter-spacing: 0.05em;
+	font-weight: 600;
+	letter-spacing: 0.05em;
 }
 
 textarea.inputTextField {
-    grid-area: field;
-    resize: vertical;
-    min-height: 1.52rem;
-    padding: .5rem;
+	grid-area: field;
+	resize: vertical;
+	min-height: 1.52rem;
+	padding: .5rem;
 
-    background-color: rgba(0, 0, 0, .2);
-    border: 1px solid rgba(255, 255, 255, .5);
+	background-color: var(--backgroundDarkLow);
+	border: 1px solid var(--borderLightMid);
 
-    color: #fff;
-    font-size: 1.2rem;
-    opacity: .7;
+	color: #fff;
+	font-size: 1.2rem;
+	opacity: .7;
 
-    transition: background-color .1s,
-                border .1s,
-                opacity .1s;
+	transition: background-color .1s,
+				border .1s,
+				opacity .1s;
 }
 textarea.inputTextField:hover {
-    opacity: 1;
+	opacity: 1;
 }
 
 textarea.inputTextField:active,
 textarea.inputTextField:focus {
-    opacity: 1;
-    border-color: #fff;
-    background-color: rgba(255, 255, 255, .05);
-    outline: none;
+	opacity: 1;
+	border-color: var(--borderLightHigh);
+	background-color: transparent;
+	outline: none;
 }
 
 button.inputTextSubmitBtn {
-    font-size: 1.1rem;
+	font-size: 1.1rem;
 }
 
 /* Output rows */
 div.output {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    padding: 1rem;
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	padding: 1rem;
 }
 
 /* Individual output row */
 div.outputStep {
-    display: flex;
-    flex-direction: column;
-    
-    padding: 1rem;
-    padding-bottom: 1rem;
+	display: flex;
+	flex-direction: column;
+	
+	padding: 1rem;
+	padding-bottom: 1rem;
 
-    background: rgba(255, 255, 255, .12);
-    background: linear-gradient(60deg, rgba(255, 255, 255, .15) 0%, rgba(255, 255, 255, .12) 40%);
-    transition: all .1s;
+	background: var(--backgroundLightLow);
+	transition: all .1s;
 }
 
 div.outputStepHeader {
-    display: flex;
-    align-items: center;
-    height: 2rem;
-    gap: .5rem;
+	display: flex;
+	align-items: center;
+	height: 2rem;
+	gap: .5rem;
 
-    margin-bottom: 1rem;
-    border-bottom: 1px solid rgba(255, 255, 255, .1);
-    padding-bottom: .5rem;
+	margin-bottom: 1rem;
+	border-bottom: 1px solid var(--borderLightLow);
+	padding-bottom: .5rem;
 }
 
 div.outputStep h1 {
-    margin: 0;
-    font-size: 1rem;
-    text-transform: uppercase;
+	margin: 0;
+	font-size: 1rem;
+	text-transform: uppercase;
 
-    font-weight: 600;
-    letter-spacing: 0.05em;
+	font-weight: 600;
+	letter-spacing: 0.05em;
 }
 
 div.outputStepHeader button.outputCopyBtn {
-    padding: .3rem .6rem;
-    font-size: .8rem;
+	padding: .3rem .6rem;
+	font-size: .8rem;
 }
 div.outputStepHeader button.outputCopyBtn:first-of-type {
-    margin-left: auto;
+	margin-left: auto;
 }
 
 /* If the step didn't involve any changes from the previous step */
 div.outputStep.noChangesMade {
-    background: rgba(255, 255, 255, .08);
+	background: var(--backgroundLightLow);
 }
 div.outputStep.noChangesMade h1 {
-    color: rgba(255, 255, 255, .5);
-    text-decoration: line-through;
+	color: var(--textMid);
+	text-decoration: line-through;
 }
 
 /* Internal div for the list of tokens in a given step/output */
 div.tokenArrayOutput {
-    display: flex;
-    flex-wrap: wrap;
-    gap: .2rem;
-    font-size: 1.5rem;
+	display: flex;
+	flex-wrap: wrap;
+	gap: .2rem;
+	font-size: 1.5rem;
 }
 
 /* Display of individual tokens (words/phrases) */
 /* Previously done as anchor elements--HTML semantic spec would prefer buttons */
 /* Buttons perform an action, anchor links navigate through the document */
 button.tokenOutput {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: end;
-    cursor: pointer;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: end;
+	cursor: pointer;
 
-    margin-top: .2rem;
-    border: 2px solid rgba(255, 255, 255, .1);
-    padding: .15rem .3rem;
+	margin-top: .2rem;
+	border: 2px solid var(--borderLightLow);
+	padding: .15rem .3rem;
 
-    font-size: 1.5rem;
-    font-weight: normal;
-    color: inherit;
-    background: rgba(0, 0, 0, .2);
+	font-size: 1.5rem;
+	font-weight: normal;
+	color: inherit;
+	background: var(--backgroundDarkLow);
 
-    text-decoration: none;
-    transition: border-color .1s,
-                color .1s,
-                background-color .1s;
+	text-decoration: none;
+	transition: border-color .1s,
+				color .1s,
+				background-color .1s;
 }
 
 /* Tokens that have been changed through one of the steps */
 button.tokenOutput.tokenHasChanged {
-    border-color: rgba(255, 255, 255, .3);
+	border-color: var(--borderLightMid);
 }
 
 button.tokenOutput.tokenHighlightedMain {
-    background-color: #fff;
+	background-color: var(--borderLightHigh);
 }
 
 /* Unknown tokens */
 button.tokenOutput.tokenUnknown {
-    border-color: rgba(255, 85, 85, 0.3);
-    color: rgba(255, 255, 255, .8);
+	border-color: var(--error30);
+	color: var(--textLightHigh);
 }
 
 /* Hover effects */
 button.tokenOutput:hover,
 button.tokenOutput:focus {
-    border-color: rgba(255, 255, 255, .5);
+	border-color: var(--borderLightMid);
 }
 
 /* Colour-coding different token types */
 button.tokenOutput.tokenParticle {
-    color: #fbb;
+	color: #fbb;
 }
 button.tokenOutput.tokenParticle.tokenHighlighted {
-    border-color: #fbb;
+	border-color: #fbb;
 }
 button.tokenOutput.tokenParticle.tokenHighlightedMain {
-    background: #fbb;
+	background: #fbb;
 }
 
 button.tokenOutput.tokenNoun {
-    color: #fbf;
+	color: #fbf;
 }
 button.tokenOutput.tokenNoun.tokenHighlighted {
-    border-color: #fbf;
+	border-color: #fbf;
 }
 button.tokenOutput.tokenNoun.tokenHighlightedMain {
-    background-color: #fbf;
+	background-color: #fbf;
 }
 
 button.tokenOutput.tokenVerb,
 button.tokenOutput.tokenVerbAux {
-    color: #aef;
+	color: #aef;
 }
 button.tokenOutput.tokenVerbAux {
-    margin-left: 0;
+	margin-left: 0;
 }
 button.tokenOutput.tokenVerb.tokenHighlighted,
 button.tokenOutput.tokenVerbAux.tokenHighlighted {
-    border-color: #aef;
+	border-color: #aef;
 }
 button.tokenOutput.tokenVerb.tokenHighlightedMain,
 button.tokenOutput.tokenVerbAux.tokenHighlightedMain {
-    background-color: #aef;
+	background-color: #aef;
 }
 
 button.tokenOutput.tokenInterjection {
-    color: #fea;
+	color: #fea;
 }
 button.tokenOutput.tokenInterjection.tokenHighlighted {
-    border-color: #fea;
+	border-color: #fea;
 }
 button.tokenOutput.tokenInterjection.tokenHighlightedMain {
-    background-color: #fea;
+	background-color: #fea;
 }
 
 button.tokenOutput.tokenAdjective {
-    color: #bfb;
+	color: #bfb;
 }
 button.tokenOutput.tokenAdjective.tokenHighlighted {
-    border-color: #bfb;
+	border-color: #bfb;
 }
 button.tokenOutput.tokenAdjective.tokenHighlightedMain {
-    background-color: #bfb;
+	background-color: #bfb;
 }
 
 button.tokenOutput.tokenSymbol {
-    opacity: 0.5;
-    border-color: transparent;
-    background: transparent;
+	opacity: 0.5;
+	border-color: transparent;
+	background: transparent;
 }
 button.tokenOutput.tokenSymbol:hover {
-    border-color: rgba(255, 255, 255, .2);
+	border-color: var(--borderLightMid);
 }
 
 button.tokenOutput.tokenSymbol.tokenHighlightedMain {
-    background: #fff;
+	background: var(--backgroundLightFull);
 }
 
 /* Tokens highlighted on select */
 button.tokenOutput.tokenHighlighted {
-    border-color: rgba(255, 255, 255, .8);
-    border-width: 2px;
-    box-shadow: 0 0 1em rgba(255, 255, 255, .1);
+	border-color: var(--borderLightHigh);
+	border-width: 2px;
+	box-shadow: 0 0 1em var(--backgroundLightLow);
 }
 
 button.tokenOutput.tokenHighlightedMain {
-    border-color: transparent;
-    color: #222;
-    z-index: 9;
+	border-color: transparent;
+	color: var(--textDarkHigh);
+	z-index: 9;
 }
 
 /* Ruby/furigana display--by default, hidden */
 button.tokenOutput span.tokenRuby {
-    /* display: none; /* Remove this to show Ruby on last line */
-    font-size: .4em;
-    letter-spacing: 0;
-    opacity: .8;
+	/* display: none; /* Remove this to show Ruby on last line */
+	font-size: .4em;
+	letter-spacing: 0;
+	opacity: .8;
 }
 
 /* Only display ruby on outputSteps marked with .showRuby */
 div.outputStep:not(.showRuby) button.tokenOutput span.tokenRuby {
-    display: none;
+	display: none;
 }
 
 /* Final output row */
 div.tokenArrayOutput.resultOutput {
-    gap: 2px;
+	gap: 2px;
 }
 
 div.tokenArrayOutput.resultOutput button.tokenOutput {
-    font-size: 1.8rem;
-    padding: 0;
-    border-width: 0 0 2px 0;
-    border-top-color: transparent;
-    border-left-color: transparent;
-    border-right-color: transparent;
+	font-size: 1.8rem;
+	padding: 0;
+	border-width: 0 0 2px 0;
+	border-top-color: transparent;
+	border-left-color: transparent;
+	border-right-color: transparent;
 }
 
 div.tokenArrayOutput.resultOutput
-    button.tokenOutput:not(:active):not(:hover):not(.tokenHighlighted):not(.tokenHighlightedMain) {
-    border-color: transparent;
+	button.tokenOutput:not(:active):not(:hover):not(.tokenHighlighted):not(.tokenHighlightedMain) {
+	border-color: transparent;
 }
 
 div.tokenArrayOutput.resultOutput
-    button.tokenOutput:not(:active):not(.tokenHighlightedMain) {
-    background: transparent;
-    box-shadow: none;
+	button.tokenOutput:not(:active):not(.tokenHighlightedMain) {
+	background: transparent;
+	box-shadow: none;
 }
 
 /* Final output row buttons */
 div.outputStep div.finalStepButtons {
-    display: flex;
-    align-items: justify;
-    height: 3rem;
-    gap: .5rem;
-    margin-top: 2rem;
+	display: flex;
+	align-items: justify;
+	height: 3rem;
+	gap: .5rem;
+	margin-top: 2rem;
 }

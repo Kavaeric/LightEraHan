@@ -15,13 +15,54 @@
 	ascent-override: 100%;
 }
 
+/* Colour chips */
+:root {
+	--accent100: #ff5500;
+	--red100: #ff5555;
+	--red30: rgba(255, 85, 85, .3);
+	--red10: rgba(255, 85, 85, .1);
+
+	--white100: #fff;
+	--white90: rgba(255, 255, 255, .90);
+	--white50: rgba(255, 255, 255, .50);
+	--white20: rgba(255, 255, 255, .20);
+	--white10: rgba(255, 255, 255, .10);
+
+	--black80: rgba(0, 0, 0, .8);
+	--black20: rgba(0, 0, 0, .2);
+	--black10: rgba(0, 0, 0, .1);
+
+	/* Second-level chips */
+	--backgroundLightFull: var(--white100);
+	--backgroundLightHigh: var(--white30);
+	--backgroundLightMid: var(--white20);
+	--backgroundLightLow: var(--white10);
+
+	--backgroundDarkLow: var(--black10);
+	
+	--borderLightHigh: var(--white90);
+	--borderLightMid: var(--white50);
+	--borderLightLow: var(--white10);
+
+	--textLightHigh: var(--white90);
+	--textLightMid: var(--white50);
+	
+	--textDarkHigh: var(--black80);
+	
+	--linkAccent: var(--accent100);
+
+	--error100: var(--red100);
+	--error30: var(--red30);
+	--error10: var(--red10);
+}
+
 body {
 	margin: 0;
 	font-family: "Poppins", sans-serif;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 
-	color: #eee;
+	color: var(--textLightHigh);
 	background-color: #000;
 }
 
@@ -50,13 +91,13 @@ code {
 }
 
 a {
-	color: #f50;
+	color: var(--linkAccent);
 	text-decoration: none;
 	transition: all .1s;
 }
 a:hover,
 a:focus {
-	background-color: rgba(255, 255, 255, .1);
+	background-color: var(--backgroundLightLow);
 }
 a:active {
 	opacity: .5;
@@ -64,11 +105,11 @@ a:active {
 
 a.buttonLink,
 button {
-    border: 2px solid rgba(255, 255, 255, .5);
+    border: 2px solid var(--borderLightMid);
 	padding: .5em 1.2em;
-    background-color: rgba(255, 255, 255, .05);
+    background-color: var(--backgroundLightLow);
     
-    color: #fff;
+    color: var(--white100);
     font-size: .9rem;
     font-weight: 600;
     font-family: inherit;
@@ -80,8 +121,8 @@ button {
 }
 button:hover, a.buttonLink:hover,
 button:focus, a.buttonLink:focus {
-    background-color: #fff;
-    color: #222;
+    background-color: var(--backgroundLightFull);
+    color: var(--textDarkHigh);
     cursor: pointer;
 }
 button:active, a.buttonLink:active {
@@ -91,10 +132,13 @@ button:active, a.buttonLink:active {
 button:disabled, a.buttonLink:disabled,
 button:disabled:hover, a.buttonLink:disabled:hover
 button:disabled:active, a.buttonLink:disabled:active {
-    border: 1px solid #f55;
-    background: rgba(255, 0, 0, .1);
-    background: linear-gradient(30deg, rgba(255, 0, 0, .1) 49%, #f55 49%, #f55 51%, rgba(255, 0, 0, .1) 51%);
-    color: #f55;
+    border: 1px solid var(--error100);
+    background: var(--error10);
+    background: linear-gradient(30deg, var(--error10) 49%,
+										var(--error100) 49%,
+										var(--error100) 51%,
+										var(--error10) 51%);
+    color: var(--error100);
     opacity: .5;
     cursor: not-allowed;
 }
@@ -105,7 +149,7 @@ button > * {
 }
 
 p, ul, ol {
-	color: rgba(255, 255, 255, .5);
+	color: var(--textLightMid);
 }
 
 ul {
@@ -116,7 +160,7 @@ ul {
 div.footer {
 	margin-top: auto;
 	padding: 2rem 1rem;
-    background-color: rgba(255, 255, 255, .12);
+    background-color: var(--backgroundLightLow);
 }
 
 div.footerAbout {
@@ -138,7 +182,7 @@ div.footerAbout h1 {
 }
 
 div.footerAbout h2 {
-	border-bottom: 1px solid rgba(255, 255, 255, .1);
+	border-bottom: 1px solid var(--borderLightLow);
 }
 
 div.footerAbout ul {
