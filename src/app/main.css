@@ -3,7 +3,7 @@
 	font-family: "Source Han Sans HW-JP";
 	src:
 		local("SourceHanSansHW-VF"),
-		url("./fonts/SourceHanSansHW-VF.otf.woff2") format("woff2");
+		url("../fonts/SourceHanSansHW-VF.otf.woff2") format("woff2");
 	ascent-override: 100%;
 }
 
@@ -11,7 +11,7 @@
 	font-family: "Source Han Sans HW-SC";
 	src:
 		local("SourceHanSansHWSC-VF"),
-		url("./fonts/SourceHanSansHWSC-VF.otf.woff2") format("woff2");
+		url("../fonts/SourceHanSansHWSC-VF.otf.woff2") format("woff2");
 	ascent-override: 100%;
 }
 

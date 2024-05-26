@@ -107,7 +107,7 @@ div.outputStepHeader button.outputCopyBtn:first-of-type {
 
 /* If the step didn't involve any changes from the previous step */
 div.outputStep.noChangesMade {
-	background: var(--backgroundLightLow);
+	opacity: 0.7;
 }
 div.outputStep.noChangesMade h1 {
 	color: var(--textMid);
@@ -129,7 +129,7 @@ button.tokenOutput {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	justify-content: end;
+	justify-content: flex-end;
 	cursor: pointer;
 
 	margin-top: .2rem;
@@ -166,63 +166,6 @@ button.tokenOutput.tokenUnknown {
 button.tokenOutput:hover,
 button.tokenOutput:focus {
 	border-color: var(--borderLightMid);
-}
-
-/* Colour-coding different token types */
-button.tokenOutput.tokenParticle {
-	color: #fbb;
-}
-button.tokenOutput.tokenParticle.tokenHighlighted {
-	border-color: #fbb;
-}
-button.tokenOutput.tokenParticle.tokenHighlightedMain {
-	background: #fbb;
-}
-
-button.tokenOutput.tokenNoun {
-	color: #fbf;
-}
-button.tokenOutput.tokenNoun.tokenHighlighted {
-	border-color: #fbf;
-}
-button.tokenOutput.tokenNoun.tokenHighlightedMain {
-	background-color: #fbf;
-}
-
-button.tokenOutput.tokenVerb,
-button.tokenOutput.tokenVerbAux {
-	color: #aef;
-}
-button.tokenOutput.tokenVerbAux {
-	margin-left: 0;
-}
-button.tokenOutput.tokenVerb.tokenHighlighted,
-button.tokenOutput.tokenVerbAux.tokenHighlighted {
-	border-color: #aef;
-}
-button.tokenOutput.tokenVerb.tokenHighlightedMain,
-button.tokenOutput.tokenVerbAux.tokenHighlightedMain {
-	background-color: #aef;
-}
-
-button.tokenOutput.tokenInterjection {
-	color: #fea;
-}
-button.tokenOutput.tokenInterjection.tokenHighlighted {
-	border-color: #fea;
-}
-button.tokenOutput.tokenInterjection.tokenHighlightedMain {
-	background-color: #fea;
-}
-
-button.tokenOutput.tokenAdjective {
-	color: #bfb;
-}
-button.tokenOutput.tokenAdjective.tokenHighlighted {
-	border-color: #bfb;
-}
-button.tokenOutput.tokenAdjective.tokenHighlightedMain {
-	background-color: #bfb;
 }
 
 button.tokenOutput.tokenSymbol {

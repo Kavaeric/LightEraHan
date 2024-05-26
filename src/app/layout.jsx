@@ -4,6 +4,9 @@ export const metadata = {
 	description: "Convert from Japanese to the fictional Light Era psuedolanguage, han."
 }
 
+// Global styles
+import "./main.css";
+
 // A Next.js App Router application must include a root layout file
 // which is a React Server Component that wraps all pages in the app
 // Next.js handles things like charset and viewport, and any files in this app directory are
