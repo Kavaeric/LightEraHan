@@ -5,7 +5,8 @@ import OutputTokenArray from "../component/OutputTokenArray";
 import OutputStats from "../component/OutputStats";
 import * as MatrixUtils from "../lib/MatrixAnalyse";
 
-import styles from "./App.css";
+import "./App.css";
+import ToggleSwitch from "../component/ToggleSwitch";
 
 // For token highlighting
 // Stores the word_position value of a selected token
@@ -31,6 +32,9 @@ function App() {
 
 	// For token highlighting, get/set what's currently highlighted
 	const [selectedToken, setSelectedToken] = useState([0, 0]);
+
+	// Flag for hiding/showing steps
+	const [stepsVisible, setStepsVisible] = useState(false);
 
 	// Will run any enclosed function when a dependency changes
 	// This one has no dependencies so it'll run once on startup
@@ -71,16 +75,29 @@ function App() {
 		// console.log(inputParse);
 	}
 
+	// Handler for toggling processing steps on/off
+	function toggleShowSteps(event) {
+		setStepsVisible(!stepsVisible);
+	}
+
 	// DOM render
 	return (
 		<div className="appContainer">
 
-		<div className="inputHeader">
-			<form className="inputForm contain-width" onSubmit={handleSubmit}>
-				<label className="inputTextLabel" htmlFor="inputText">Input Japanese text:</label>
-				<textarea className="inputTextField" type="text" name="inputText" ref={inputField} placeholder={placeholderText} lang="ja" />
-				<button className="inputTextSubmitBtn" type="submit" disabled={!isConverterLoaded}>Convert</button>
-			</form>
+		<div className="headerArea">
+			<div className="header contain-width">
+				<form className="headerForm" onSubmit={handleSubmit}>
+					<div className="inputForm">
+						<label className="formHeader" htmlFor="inputText">Input Japanese text</label>
+						<textarea type="text" name="inputText" ref={inputField} placeholder={placeholderText} lang="ja" />
+						<button className="inputTextSubmitBtn" type="submit" disabled={!isConverterLoaded}>Convert</button>
+					</div>
+					<div className="optionsForm">
+						<label className="formHeader">Options</label>
+						<ToggleSwitch switchName="toggleStepVisibility" switchHandler={toggleShowSteps} switchLabel="Show conversion steps"/>
+					</div>
+				</form>
+			</div>
 		</div>
 
 		{/* Anything within these tags can access these context values/functions */}
@@ -90,19 +107,19 @@ function App() {
 				<div className="outputStep">
 					<div className="outputStepHeader">
 						<h1>Initial parse</h1>
-						<button onClick={() => copyOutputText(conversionMatrix[0].tokenArray)} className="outputCopyBtn" disabled={!isConverterLoaded}>Copy Text</button>
+						<button onClick={() => copyOutputText(conversionMatrix[0].tokenArray)} className="outputCopyBtn" disabled={!conversionMatrix.length > 0}>Copy Text</button>
 					</div>
 					{
 						conversionMatrix.length > 0
 							? 	<StepContext.Provider value={[0, conversionMatrix.length]}>
-								<div className="tokenArrayOutput"><OutputTokenArray tokens={conversionMatrix[0].tokenArray} /></div>
+								<OutputTokenArray tokens={conversionMatrix[0].tokenArray} />
 								</StepContext.Provider>
 							: 'Enter some text above, then click the "convert" button.'
 					}
 				</div>
 				
 				{
-					conversionMatrix.length > 0
+					conversionMatrix.length > 0 && stepsVisible
 						// For every tokenArray in tokenArrays, create a new outputStep div with its own tokenArrayOutput class.
 						? conversionMatrix.slice(1).map((conversionStep, index) => 
 							<StepContext.Provider value={[index + 1, conversionMatrix.length]} key={index + 1}>
@@ -118,9 +135,9 @@ function App() {
 									}
 									<button onClick={() => copyOutputText(conversionStep.tokenArray)} className="outputCopyBtn">Copy Text</button>
 								</div>
-								<div className="tokenArrayOutput" key={index + 1}>
-									<OutputTokenArray tokens={conversionStep.tokenArray} />
-								</div>
+
+								<OutputTokenArray tokens={conversionStep.tokenArray} key={index + 1} />
+
 							</div>
 							</StepContext.Provider>)
 						// Otherwise, output nothing
@@ -132,14 +149,14 @@ function App() {
 					conversionMatrix.length > 0
 						// For every tokenArray in tokenArrays, create a new outputStep div with its own tokenArrayOutput class.
 						? 	<StepContext.Provider value={[conversionMatrix.length - 1, conversionMatrix.length]}>
-							<div className="outputStep showRuby">
+							<div className="outputStep">
 								<div className="outputStepHeader">
 									<h1>Final result</h1>
 									<button onClick={() => copyOutputText(conversionMatrix.at(-1).tokenArray)} className="outputCopyBtn">Copy Text</button>
 								</div>
-								<div className="tokenArrayOutput resultOutput">
-									<OutputTokenArray tokens={conversionMatrix.at(-1).tokenArray} />
-								</div>
+
+								<OutputTokenArray tokens={conversionMatrix.at(-1).tokenArray} final={true} />
+
 								<div className="finalStepButtons">
 									<button onClick={() => copyToClipboard(MatrixUtils.getJAReading(conversionMatrix.at(-1).tokenArray))} className="finalCopyBtn">Copy JA Readings</button>
 									<button onClick={() => copyToClipboard(MatrixUtils.getCNReading(conversionMatrix.at(-1).tokenArray))} className="finalCopyBtn">Copy CN Readings</button>

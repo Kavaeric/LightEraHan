@@ -3,6 +3,7 @@ import { getTokenizer, buildTokenizer } from "./Kuromoji"; // Kuromoji parser
 import Hangulizer from "./Hangulizer";
 import ConversionTables from "./ConversionTables";
 import { matchAndReplaceAll } from "./TokenArraySearch";
+import readingsDict from "../data/readings.json"
 import Kanji from "./CharLib";
 import * as Wanakana from "wanakana";
 
@@ -102,7 +103,7 @@ function sliceVerbs(tokenArray) {
 			if (verbEndings.includes(token.display_form.slice(-1))) {
 
 				if (token.display_form.length === 1) {
-					console.log(`Attempted to verb-slice ${token.display_form}, but it only consists of one character.`);
+					console.log(`Attempted to verb-slice [${token.word_position}] ${token.display_form}, but it only consists of one character.`);
 					continue;
 				}
 
@@ -209,7 +210,19 @@ function addReadingsToArray(tokenArray) {
 
 			for (let char of charList) {
 
-				// If it's kanji, push the first onyomi reading to the list
+				// If it's in our reading dictionary, use it
+				if (char in readingsDict) {
+					readingList.push(readingsDict[char]);
+
+					// Checks for redundant readings
+					if (readingsDict[char] === Kanji.getOnyomi(char)) {
+						console.log(`readings.json has redundant reading for ${char}: ${readingsDict[char]} matches Kanji.getOnyomi ${Kanji.getOnyomi(char)}`);
+					}
+
+					continue;
+				}
+				
+				// If it's kanji, use the first onyomi reading
 				if (Wanakana.isKanji(char)) {
 					readingList.push(Kanji.getOnyomi(char));
 					continue;

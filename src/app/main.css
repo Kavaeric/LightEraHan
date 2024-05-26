@@ -29,7 +29,8 @@
 	--white10: rgba(255, 255, 255, .10);
 
 	--black80: rgba(0, 0, 0, .8);
-	--black20: rgba(0, 0, 0, .2);
+	--black60: rgba(0, 0, 0, .3);
+	--black30: rgba(0, 0, 0, .2);
 	--black10: rgba(0, 0, 0, .1);
 
 	/* Second-level chips */
@@ -38,6 +39,8 @@
 	--backgroundLightMid: var(--white20);
 	--backgroundLightLow: var(--white10);
 
+	--backgroundDarkHigh: var(--black60);
+	--backgroundDarkMid: var(--black30);
 	--backgroundDarkLow: var(--black10);
 	
 	--borderLightHigh: var(--white90);
@@ -134,13 +137,10 @@ button:disabled:hover, a.buttonLink:disabled:hover
 button:disabled:active, a.buttonLink:disabled:active {
     border: 1px solid var(--error100);
     background: var(--error10);
-    background: linear-gradient(30deg, var(--error10) 49%,
-										var(--error100) 49%,
-										var(--error100) 51%,
-										var(--error10) 51%);
     color: var(--error100);
     opacity: .5;
     cursor: not-allowed;
+	text-decoration: line-through;
 }
 
 /* Placing items inside a button would actually block interaction; this fixes that */
@@ -154,37 +154,4 @@ p, ul, ol {
 
 ul {
 	list-style: square;
-}
-
-/* Page footer */
-div.footer {
-	margin-top: auto;
-	padding: 2rem 1rem;
-    background-color: var(--backgroundLightLow);
-}
-
-div.footerAbout {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	grid-template-rows: auto auto;
-	grid-template-areas: "header header" "col1 col2";
-	column-gap: 1rem;
-}
-
-div.footerAbout h1 {
-	grid-area: header;
-	margin: 0;
-
-	font-size: 1.5rem;
-	text-transform: uppercase;
-	font-weight: 600;
-	letter-spacing: 0.05em;
-}
-
-div.footerAbout h2 {
-	border-bottom: 1px solid var(--borderLightLow);
-}
-
-div.footerAbout ul {
-	margin: 1em 0;
 }

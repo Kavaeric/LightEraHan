@@ -1,0 +1,91 @@
+/* Creating a switch element */
+.switch {
+	display: flex;
+	flex-direction: row;
+	height: 2em;
+	align-items: center;
+	border: 1px solid transparent;
+	transition: .1s;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+	position: absolute;
+	left: -999vw;
+}
+
+.switch span.switchText {
+	opacity: .8;
+	transition: .1s;
+}
+
+/* Slider track */
+.switch .switchRunner {
+	display: block;
+	box-sizing: border-box;
+	width: 4em;
+	height: 1em;
+
+	margin-right: .5em;
+	border: 1px solid var(--borderLightLow);
+	padding: .2em;
+	padding-left: 2em;
+	background: var(--backgroundDarkHigh);
+
+	cursor: pointer;
+	transition: .1s;
+}
+
+/* Moving slider */
+.switch .switchRunner .slider {
+	display: block;
+	box-sizing: border-box;
+	width: 100%;
+	height: 100%;
+
+	background: var(--backgroundLightMid);
+	transition: .1s;
+}
+
+/* When switch is on */
+.switch input:checked + .switchRunner {
+	padding-left: .1em;
+	padding-right: 2em;
+	background-color: var(--backgroundLightFull);
+	box-shadow: 0 0 1em var(--borderLightMid);
+}
+
+.switch input:checked + .switchRunner .slider {
+	background: #222;
+}
+
+.switch input:hover + .switchRunner,
+.switch input:focus + .switchRunner {
+	border-color: var(--borderLightHigh);
+}
+.switch input:hover + .switchRunner .slider,
+.switch input:focus + .switchRunner .slider {
+	background: var(--borderLightHigh);
+}
+.switch input:hover + .switchRunner + span.switchText,
+.switch input:focus + .switchRunner + span.switchText {
+	opacity: 1;
+}
+
+.switch input:hover:checked + .switchRunner .slider,
+.switch input:focus:checked + .switchRunner .slider {
+	background: #777;
+}
+
+.switch input:active {
+	opacity: .8;
+}
+.switch input:active + .switchRunner {
+	opacity: .8;
+}
+.switch input:active + .switchRunner .slider {
+	opacity: .8;
+}
+.switch input:active + .switchRunner + span.switchText {
+	opacity: .8;
+}

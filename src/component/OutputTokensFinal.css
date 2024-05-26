@@ -1,0 +1,27 @@
+/* Final output row */
+div.tokenArrayOutput.finalResult {
+	gap: 2px;
+}
+
+/* Only display ruby on final result */
+div.tokenArrayOutput.finalResult button.tokenOutput span.tokenRuby {
+	display: block;
+}
+
+div.tokenArrayOutput.finalResult button.tokenOutput {
+	font-size: 1.8rem;
+	padding: 0;
+	border-width: 0 0 2px 0;
+	border-top-color: transparent;
+	border-left-color: transparent;
+	border-right-color: transparent;
+}
+
+div.tokenArrayOutput.finalResult button.tokenOutput:not(:active):not(:hover):not(.tokenHighlighted):not(.tokenHighlightedMain) {
+	border-color: transparent;
+}
+
+div.tokenArrayOutput.finalResult button.tokenOutput:not(:active):not(.tokenHighlightedMain) {
+	background: transparent;
+	box-shadow: none;
+}

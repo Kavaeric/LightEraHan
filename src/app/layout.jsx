@@ -7,11 +7,8 @@ export const metadata = {
 // Global styles
 import "./main.css";
 
-// A Next.js App Router application must include a root layout file
-// which is a React Server Component that wraps all pages in the app
-// Next.js handles things like charset and viewport, and any files in this app directory are
-// automatically added, meaning we don't have to do any <link>s to things like icons
-
+// A Next.js App Router application must include a root layout file which is a React Server Component that wraps all pages in the app
+// Next.js handles things like charset and viewport, and any files in this app directory are automatically added, meaning we don't have to do any <link>s to things like icons
 export default function RootLayout({ children }) {
 	return (
 		<html lang="en">

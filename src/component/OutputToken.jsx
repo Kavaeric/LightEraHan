@@ -1,7 +1,6 @@
 import { useContext } from "react";
 import classNames from "classnames";
 import { SelectedTokenContext, SetSelectedTokenContext, StepContext} from "../app/App";
-import styles from "./OutputToken.css";
 
 export default function OutputToken ({token}) {
 
@@ -29,7 +28,8 @@ export default function OutputToken ({token}) {
     return (
         // Style the token depending on its content
         <button className={
-            classNames("tokenOutput", 
+            classNames(
+             "tokenOutput", 
             {"tokenNoun": token.pos === "名詞" && token.pos_detail_1 !== "固有名詞"}, // Excluding proper nouns
             {"tokenParticle": token.pos === "助詞"},
             {"tokenVerb": token.pos === "動詞"},

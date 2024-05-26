@@ -1,0 +1,153 @@
+/* Internal div for the list of tokens in a given step/output */
+div.tokenArrayOutput {
+	display: flex;
+	flex-wrap: wrap;
+	gap: .2rem;
+	font-size: 1.5rem;
+}
+
+/* Display of individual tokens (words/phrases) */
+/* Previously done as anchor elements--HTML semantic spec would prefer buttons */
+/* Buttons perform an action, anchor links navigate through the document */
+button.tokenOutput {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-end;
+	cursor: pointer;
+
+	margin-top: .2rem;
+	border: 2px solid var(--borderLightLow);
+	padding: .15rem .3rem;
+
+	font-size: 1.5rem;
+	font-weight: normal;
+	color: inherit;
+	background: var(--backgroundDarkLow);
+
+	text-decoration: none;
+	transition: border-color .1s,
+				color .1s,
+				background-color .1s;
+}
+
+/* Tokens that have been changed through one of the steps */
+button.tokenOutput.tokenHasChanged {
+	border-color: var(--borderLightMid);
+}
+
+button.tokenOutput.tokenHighlightedMain {
+	background-color: var(--borderLightHigh);
+}
+
+/* Unknown tokens */
+button.tokenOutput.tokenUnknown {
+	border-color: var(--error30);
+	color: var(--textLightHigh);
+}
+
+/* Hover effects */
+button.tokenOutput:hover,
+button.tokenOutput:focus {
+	border-color: var(--borderLightMid);
+}
+
+button.tokenOutput.tokenSymbol {
+	opacity: 0.5;
+	border-color: transparent;
+	background: transparent;
+}
+button.tokenOutput.tokenSymbol:hover {
+	border-color: var(--borderLightMid);
+}
+
+button.tokenOutput.tokenSymbol.tokenHighlightedMain {
+	background: var(--backgroundLightFull);
+}
+
+/* Tokens highlighted on select */
+button.tokenOutput.tokenHighlighted {
+	border-color: var(--borderLightHigh);
+	border-width: 2px;
+	box-shadow: 0 0 1em var(--backgroundLightLow);
+}
+
+button.tokenOutput.tokenHighlightedMain {
+	border-color: transparent;
+	color: var(--textDarkHigh);
+	z-index: 9;
+}
+
+/* Ruby/furigana display--by default, hidden */
+div.tokenArrayOutput span.tokenRuby {
+	display: none;
+	font-size: .4em;
+	letter-spacing: 0;
+	opacity: .8;
+}
+
+/* Variables for colour coding */
+div.outputStep {
+	--particle: #fbb;
+	--noun: #fbf;
+	--interjection: #fea;
+	--adjective: #bfb;
+	--verb: #aef;
+}
+
+/* Colour-coding different token types */
+button.tokenOutput.tokenParticle:not(.tokenHighlightedMain) {
+	color: var(--particle);
+}
+button.tokenOutput.tokenParticle.tokenHighlighted {
+	border-color: var(--particle);
+}
+button.tokenOutput.tokenParticle.tokenHighlightedMain {
+	background: var(--particle);
+}
+
+button.tokenOutput.tokenNoun:not(.tokenHighlightedMain) {
+	color: var(--noun);
+}
+button.tokenOutput.tokenNoun.tokenHighlighted {
+	border-color: var(--noun);
+}
+button.tokenOutput.tokenNoun.tokenHighlightedMain {
+	background-color: var(--noun);
+}
+
+button.tokenOutput.tokenVerbAux {
+	margin-left: 0;
+}
+button.tokenOutput.tokenVerb:not(.tokenHighlightedMain),
+button.tokenOutput.tokenVerbAux:not(.tokenHighlightedMain) {
+	color: var(--verb);
+}
+button.tokenOutput.tokenVerb.tokenHighlighted,
+button.tokenOutput.tokenVerbAux.tokenHighlighted {
+	border-color: var(--verb);
+}
+button.tokenOutput.tokenVerb.tokenHighlightedMain,
+button.tokenOutput.tokenVerbAux.tokenHighlightedMain {
+	background-color: var(--verb);
+}
+
+button.tokenOutput.tokenInterjection:not(.tokenHighlightedMain) {
+	color: var(--interjection);
+}
+button.tokenOutput.tokenInterjection.tokenHighlighted {
+	border-color: var(--interjection);
+}
+button.tokenOutput.tokenInterjection.tokenHighlightedMain {
+	background-color: var(--interjection);
+}
+
+button.tokenOutput.tokenAdjective:not(.tokenHighlightedMain) {
+	color: var(--adjective);
+}
+button.tokenOutput.tokenAdjective.tokenHighlighted {
+	border-color: var(--adjective);
+}
+button.tokenOutput.tokenAdjective.tokenHighlightedMain {
+	background-color: var(--adjective);
+}

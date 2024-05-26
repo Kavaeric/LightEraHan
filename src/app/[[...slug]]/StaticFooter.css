@@ -1,0 +1,32 @@
+/* Page footer */
+div.footerArea {
+	margin-top: auto;
+	padding: 2rem 1rem;
+    background-color: var(--backgroundLightLow);
+}
+
+div.footer {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-template-rows: auto auto;
+	grid-template-areas: "header header" "col1 col2";
+	column-gap: 1rem;
+}
+
+div.footer h1 {
+	grid-area: header;
+	margin: 0;
+
+	font-size: 1.5rem;
+	text-transform: uppercase;
+	font-weight: 600;
+	letter-spacing: 0.05em;
+}
+
+div.footer h2 {
+	border-bottom: 1px solid var(--borderLightLow);
+}
+
+div.footer ul {
+	margin: 1em 0;
+}
