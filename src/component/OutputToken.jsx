@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import classNames from "classnames";
-import { SelectedTokenContext, SetSelectedTokenContext, StepContext} from "./App";
+import { SelectedTokenContext, SetSelectedTokenContext, StepContext} from "../App";
 
 export default function OutputToken ({token}) {
 

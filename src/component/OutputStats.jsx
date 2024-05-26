@@ -1,5 +1,5 @@
 import "./OutputStats.css";
-import * as MatrixUtils from "./lib/MatrixAnalyse";
+import * as MatrixUtils from "../lib/MatrixAnalyse";
 import StatsChange from "./StatsChange";
 
 export default function OutputStats ({matrix}) {

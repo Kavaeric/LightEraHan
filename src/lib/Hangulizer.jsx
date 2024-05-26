@@ -2,7 +2,7 @@ import * as HangulJS from "hangeul-js";
 import * as Wanakana from "wanakana";
 import { kanaToSyllables } from "./JapaneseUtils";
 
-import kanaHangulDict from "./kanaHangul.json";
+import kanaHangulDict from "../data/kanaHangul.json";
 
 // Handles any kana digraphs that aren't map-able to Hangul
 function handleDigraphs (token, nextChar) {

@@ -1,8 +1,8 @@
 import Kanji from "kanji.js";
 import * as ChineseStroke from "chinese-stroke";
-import hiraStrokes from "./hiraStrokes.json";
-import kataStrokes from "./kataStrokes.json";
-import jamoStrokes from "./jamoStrokes.json";
+import hiraStrokes from "../data/hiraStrokes.json";
+import kataStrokes from "../data/kataStrokes.json";
+import jamoStrokes from "../data/jamoStrokes.json";
 import * as HangulJS from "hangeul-js";
 
 function getKanji(char) {

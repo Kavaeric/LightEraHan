@@ -1,17 +1,15 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+// A client component, which gets prerendered to HTML server-side before being sent
+// to the, well, client
+'use client'
+ 
+import React from 'react'
+import dynamic from 'next/dynamic'
 
-// Importing Source Han Sans
-// Yeah, these are huge, blame them for not providing individual weights in WOFF/2 format
-// Funnily enough the individual weight OTFs are larger than these combined variable ones lol
-import "./fonts/SourceHanSansHWSC-VF.otf.woff2";
-import "./fonts/SourceHanSansHW-VF.otf.woff2";
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
+// Disable server pre-rendering on everything
+const App = dynamic(() => import('../../App'), { ssr: false })
+ 
+export function ClientOnly() {
+  return (
 	<div className="pageContainer">
 	<React.StrictMode>
 		<App />
@@ -69,9 +67,5 @@ root.render(
 		</div>
 	</div>
 	</div>
-);
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+  )
+}

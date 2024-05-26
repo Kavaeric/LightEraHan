@@ -4,7 +4,7 @@ import * as HangulJS from "hangeul-js";
 import * as HangulRoma from "@romanize/korean";
 import Hangulizer from "./Hangulizer";
 import CharLib from "./CharLib";
-import punctConversion from "./punctConversion.json";
+import punctConversion from "../data/punctConversion.json";
 
 // Extracts the display_form text from an array
 export function getArrayText(tokenArray, join = true, delimiter = "") {

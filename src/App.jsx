@@ -2,8 +2,8 @@ import { useEffect, useState, createContext, useRef } from 'react';
 import classNames from 'classnames';
 import './App.css';
 import HanConverter from './lib/HanConverter';
-import OutputTokenArray from './OutputTokenArray';
-import OutputStats from './OutputStats';
+import OutputTokenArray from "./component/OutputTokenArray";
+import OutputStats from './component/OutputStats';
 import * as MatrixUtils from "./lib/MatrixAnalyse";
 
 // For token highlighting
